@@ -8,6 +8,7 @@ builder.Services.AddControllers();
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddServices();
 builder.Services.SetIdentity();
+builder.Services.SetAuthentication();
 
 var app = builder.Build();
 

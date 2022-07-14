@@ -7,8 +7,11 @@ using FreeHost.Infrastructure.Interfaces.Repositories;
 using FreeHost.Infrastructure.Interfaces.Services;
 using FreeHost.Infrastructure.Models.Authorization;
 using FreeHost.Infrastructure.Models.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FreeHost.API.Extensions;
 
@@ -62,6 +65,30 @@ public static class ServiceCollectionExtensions
         var mapper = mapperConfig.CreateMapper();
 
         services.AddSingleton(mapper);
+
+        return services;
+    }
+
+    public static IServiceCollection SetAuthentication(this IServiceCollection services)
+    {
+        var authConfig = services.BuildServiceProvider().GetRequiredService<IOptions<AuthOptions>>().Value;
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = authConfig.Issuer,
+                    ValidateAudience = true,
+                    ValidAudience = authConfig.Audience,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(authConfig.Key),
+                    RequireExpirationTime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
 
         return services;
     }
