@@ -85,7 +85,7 @@ public class AuthorizationController : ControllerBase
         {
             return BadRequest("This email is already in use");
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return BadRequest("InternalServerError");
         }
