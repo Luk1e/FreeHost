@@ -25,7 +25,7 @@ public class AuthorizationController : ControllerBase
         try
         {
             var authResult = await _authorizationService.AuthorizeAsync(model);
-            if (!authResult.Success)
+            if (!authResult.Succeeded)
             {
                 return BadRequest(authResult.Errors);
             }
@@ -50,26 +50,29 @@ public class AuthorizationController : ControllerBase
     public async Task<IActionResult> Register(RegistrationDto model)
     {
         if (string.IsNullOrEmpty(model.Login))
-            return BadRequest("Invalid Login");
+            return BadRequest("Login cannot be empty");
         
         if (string.IsNullOrEmpty(model.Password))
-            return BadRequest("Invalid Password");
+            return BadRequest("Password cannot be empty");
         
         if (string.IsNullOrEmpty(model.Email))
-            return BadRequest("Invalid Email");
+            return BadRequest("Email cannot be empty");
         
-        if (string.IsNullOrEmpty(model.UserName))
-            return BadRequest("Invalid UserName");
+        if (string.IsNullOrEmpty(model.FirstName))
+            return BadRequest("First name cannot be empty");
+
+        if (string.IsNullOrEmpty(model.LastName))
+            return BadRequest("Last name cannot be empty");
 
         try
         {
             var result = await _authorizationService.RegisterAsync(model);
-            if (!result.IdentityResult.Succeeded)
+            if (!result.Succeeded)
             {
-                return BadRequest(result.IdentityResult.Errors);
+                return BadRequest(result.Errors);
             }
             
-            return Ok("User registered");
+            return Ok(result);
 
         }
         catch (AggregateException passwordException)

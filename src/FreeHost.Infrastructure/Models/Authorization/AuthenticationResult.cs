@@ -1,9 +1,11 @@
-﻿namespace FreeHost.Infrastructure.Models.Authorization;
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace FreeHost.Infrastructure.Models.Authorization;
 
 public class AuthenticationResult
 {
-    public string Token { get; set; }
-    public string RefreshToken { get; set; }
-    public bool Success { get; set; }
-    public IEnumerable<string> Errors { get; set; }
+    public string Token { get; set; } = string.Empty;
+    public string RefreshToken { get; set; } = string.Empty;
+    public bool Succeeded { get; set; }
+    public IEnumerable<IdentityError> Errors { get; set; } = Enumerable.Empty<IdentityError>();
 }

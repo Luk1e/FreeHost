@@ -6,5 +6,5 @@ namespace FreeHost.Infrastructure.Interfaces.Services;
 public interface IAuthorizationService
 {
     Task<AuthenticationResult> AuthorizeAsync(AuthorizationDto dto);
-    Task<RegistrationResult> RegisterAsync(RegistrationDto user);
+    Task<AuthenticationResult> RegisterAsync(RegistrationDto user);
 }

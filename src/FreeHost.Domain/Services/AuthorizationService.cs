@@ -46,11 +46,34 @@ public class AuthorizationService : IAuthorizationService
         return await GenerateAuthenticationResultForUserAsync(user);
     }
 
-    public async Task<RegistrationResult> RegisterAsync(RegistrationDto userDto)
+    public async Task<AuthenticationResult> RegisterAsync(RegistrationDto userDto)
     {
+        if (_userManager.Users.SingleOrDefault(l => l.Login == userDto.Login) is not null)
+        {
+            var errors = new List<IdentityError> { new() { Code = "DuplicateLogin", Description = $"Login '{userDto.Login}' is already taken." } };
+            return new AuthenticationResult
+            {
+                Succeeded = false,
+                Errors = errors
+            };
+        }
+        if (_userManager.Users.SingleOrDefault(l => l.Email == userDto.Email) is not null)
+        {
+            var errors = new List<IdentityError> { new() { Code = "DuplicateEmail", Description = $"Email '{userDto.Email}' is already taken." } };
+            return new AuthenticationResult
+            {
+                Succeeded = false,
+                Errors = errors
+            };
+        }
+
         var user = _mapper.Map<User>(userDto);
+        user.UserName = user.Email;
         var result = await _userManager.CreateAsync(user, userDto.Password);
-        return new RegistrationResult{User = user, IdentityResult = result};
+
+        return result.Succeeded
+            ? await AuthorizeAsync(_mapper.Map<AuthorizationDto>(userDto))
+            : _mapper.Map<AuthenticationResult>(result);
     }
 
     private async Task<AuthenticationResult> GenerateAuthenticationResultForUserAsync(User user)
@@ -86,7 +109,7 @@ public class AuthorizationService : IAuthorizationService
 
         return new AuthenticationResult
         {
-            Success = true,
+            Succeeded = true,
             Token = tokenHandler.WriteToken(accessToken),
             RefreshToken = refreshToken.Token
         };
