@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using FreeHost.Infrastructure.Interfaces.Services;
-using FreeHost.Infrastructure.Models.DTOs;
+using FreeHost.Infrastructure.Models.Authorization;
+using FreeHost.Infrastructure.Models.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreeHost.API.Controllers;
@@ -17,14 +18,14 @@ public class AuthorizationController : ControllerBase
     }
 
     [HttpPost("authorize")]
-    public async Task<IActionResult> Authorize([FromBody]AuthorizationDto model)
+    public async Task<IActionResult> Authorize([FromBody] AuthorizationRequest request)
     {
-        if (string.IsNullOrEmpty(model.Login) || string.IsNullOrEmpty(model.Password))
+        if (string.IsNullOrEmpty(request.Login) || string.IsNullOrEmpty(request.Password))
             return BadRequest("Invalid login or password");
 
         try
         {
-            var authResult = await _authorizationService.AuthorizeAsync(model);
+            var authResult = await _authorizationService.AuthorizeAsync(request);
             if (!authResult.Succeeded)
             {
                 return BadRequest(authResult.Errors);
@@ -47,26 +48,26 @@ public class AuthorizationController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegistrationDto model)
+    public async Task<IActionResult> Register(RegistrationRequest request)
     {
-        if (string.IsNullOrEmpty(model.Login))
+        if (string.IsNullOrEmpty(request.Login))
             return BadRequest("Login cannot be empty");
         
-        if (string.IsNullOrEmpty(model.Password))
+        if (string.IsNullOrEmpty(request.Password))
             return BadRequest("Password cannot be empty");
         
-        if (string.IsNullOrEmpty(model.Email))
+        if (string.IsNullOrEmpty(request.Email))
             return BadRequest("Email cannot be empty");
         
-        if (string.IsNullOrEmpty(model.FirstName))
+        if (string.IsNullOrEmpty(request.FirstName))
             return BadRequest("First name cannot be empty");
 
-        if (string.IsNullOrEmpty(model.LastName))
+        if (string.IsNullOrEmpty(request.LastName))
             return BadRequest("Last name cannot be empty");
 
         try
         {
-            var result = await _authorizationService.RegisterAsync(model);
+            var result = await _authorizationService.RegisterAsync(request);
             if (!result.Succeeded)
             {
                 return BadRequest(result.Errors);
@@ -91,6 +92,22 @@ public class AuthorizationController : ControllerBase
         catch (Exception)
         {
             return BadRequest("InternalServerError");
+        }
+    }
+
+    [HttpPost("refreshtoken")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+    {
+        try
+        {
+            var authResult = await _authorizationService.RefreshTokenAsync(request);
+            if (authResult.Succeeded)
+                return Ok(authResult);
+            return BadRequest(authResult.Errors);
+        }
+        catch (Exception)
+        {
+            return BadRequest();
         }
     }
 }
