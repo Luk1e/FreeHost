@@ -1,9 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 using FreeHost.Infrastructure.Utilities;
 
-namespace FreeHost.Infrastructure.Models.DTOs;
+namespace FreeHost.Infrastructure.Models.Requests;
 
-public class RegistrationDto
+public class RegistrationRequest
 {
     public string Email { get; set; }
     public string Password { get; set; }
