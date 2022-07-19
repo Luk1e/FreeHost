@@ -1,12 +1,25 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import Header from "../components/Header";
 
 function AuthorizedLayout() {
-    
-    if (true) {
-        return <Navigate to="/" />;
-      }
-  return <Outlet />;
+  const navigate = useNavigate();
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  useEffect(() => {
+    if (!userInfo) {
+      navigate("/login");
+    }
+  }, []);
+  return (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  );
 }
 
 export default AuthorizedLayout;

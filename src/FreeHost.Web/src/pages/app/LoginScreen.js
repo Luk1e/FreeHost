@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../store/actions/userActions";
 import { useNavigate } from "react-router-dom";
+
+import Message from "../../components/Message"
+import Loader from "../../components/Loader"
+
+import "../../css/pages/LoginScreen.css";
 function LoginScreen() {
   const [loginData, setLoginData] = useState("");
   const [password, setPassword] = useState("");
@@ -15,18 +19,54 @@ function LoginScreen() {
   const dispatch = useDispatch();
   useEffect(() => {
     if (userInfo) {
-      navigate(-1);
+      navigate("/", { replace: true });
     }
-  }, [userInfo]);
+  }, [userInfo, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(login("Login", "Password_1"));
+    dispatch(login(loginData, password));
+    // "Login", "Password_1"
   };
-
+  const RegisterNavigator = () => {
+    navigate("/register", { replace: true });
+  };
   return (
-    <div>
-      LoginScreen <button onClick={(e) => submitHandler(e)}>dd</button>
+    <div className="login-page">
+
+      <div className="login-container">
+        <form onSubmit={submitHandler} className="login-inner-container">
+          <h1 className="login-header">Login</h1>
+          {loading ? <Loader/> : error? <Message>{error}</Message> : <></>}
+                
+          <input
+            type="text"
+            name="login"
+            placeholder="Login"
+            className="login-input"
+            value={loginData}
+            onChange={(e) => setLoginData(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            className="login-input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <div className="login-btn-container">
+            <button className="login-btn" onClick={() => RegisterNavigator()}>
+              Register
+            </button>
+            <button className="login-btn" type="submit">
+              Login
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
