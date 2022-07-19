@@ -12,4 +12,16 @@ public class AppDbContext : IdentityDbContext<User>
     {
 
     }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        
+        builder.Entity<User>()
+            .HasIndex(e => e.Email).IsUnique();
+        builder.Entity<User>()
+            .HasIndex(l => l.Login).IsUnique();
+        builder.Entity<User>()
+            .Property(e => e.Email).IsRequired();
+    }
 }

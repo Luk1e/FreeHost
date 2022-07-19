@@ -7,9 +7,10 @@ using FreeHost.Infrastructure.Interfaces.Database;
 using FreeHost.Infrastructure.Interfaces.Repositories;
 using FreeHost.Infrastructure.Interfaces.Services;
 using FreeHost.Infrastructure.Models.Authorization;
-using FreeHost.Infrastructure.Models.DTOs;
 using FreeHost.Infrastructure.Models.Options;
+using FreeHost.Infrastructure.Models.Requests;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -32,13 +33,13 @@ public class AuthorizationService : IAuthorizationService
         _mapper = mapper;
     }
 
-    public async Task<AuthenticationResult> AuthorizeAsync(AuthorizationDto dto)
+    public async Task<AuthenticationResult> AuthorizeAsync(AuthorizationRequest request)
     {
-        var user = _userManager.Users.SingleOrDefault(l => l.Login == dto.Login);
+        var user = _userManager.Users.SingleOrDefault(l => l.Login == request.Login);
         if (user == null)
             throw new NullReferenceException("User was not found");
 
-        var passwordCheck = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
+        var passwordCheck = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
         if (!passwordCheck.Succeeded)
             throw new UnauthorizedAccessException();
         
@@ -46,11 +47,83 @@ public class AuthorizationService : IAuthorizationService
         return await GenerateAuthenticationResultForUserAsync(user);
     }
 
-    public async Task<RegistrationResult> RegisterAsync(RegistrationDto userDto)
+    public async Task<AuthenticationResult> RegisterAsync(RegistrationRequest request)
     {
-        var user = _mapper.Map<User>(userDto);
-        var result = await _userManager.CreateAsync(user, userDto.Password);
-        return new RegistrationResult{User = user, IdentityResult = result};
+        if (_userManager.Users.SingleOrDefault(l => l.Login == request.Login) is not null)
+        {
+            var errors = new List<IdentityError> { new() { Code = "DuplicateLogin", Description = $"Login '{request.Login}' is already taken." } };
+            return new AuthenticationResult
+            {
+                Succeeded = false,
+                Errors = errors
+            };
+        }
+        if (_userManager.Users.SingleOrDefault(l => l.Email == request.Email) is not null)
+        {
+            var errors = new List<IdentityError> { new() { Code = "DuplicateEmail", Description = $"Email '{request.Email}' is already taken." } };
+            return new AuthenticationResult
+            {
+                Succeeded = false,
+                Errors = errors
+            };
+        }
+
+        var user = _mapper.Map<User>(request);
+        user.UserName = user.Email;
+        var result = await _userManager.CreateAsync(user, request.Password);
+
+        return result.Succeeded
+            ? await AuthorizeAsync(_mapper.Map<AuthorizationRequest>(request))
+            : _mapper.Map<AuthenticationResult>(result);
+    }
+
+    public async Task<AuthenticationResult> RefreshTokenAsync(RefreshTokenRequest request)
+    {
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = _authConfiguration.Issuer,
+            ValidateAudience = true,
+            ValidAudience = _authConfiguration.Audience,
+            ValidateLifetime = true,
+            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(_authConfiguration.Key),
+            RequireExpirationTime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+
+        var validatedToken = GetPrincipalFromToken(request.AccessToken, tokenValidationParameters);
+        if (validatedToken is null)
+            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "InvalidToken", Description = "Could not validate access token" } } };
+
+        var expiryDateUnix =
+            long.Parse(validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
+        var expiryDateTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            .AddSeconds(expiryDateUnix);
+        if (expiryDateTimeUtc > DateTime.UtcNow)
+            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "NotExpired", Description = "This access token hasn't expired yet" } } };
+
+        var jti = validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
+        var storedRefreshToken = await _refreshTokenRepo.Get(x => x.Token == request.RefreshToken).SingleOrDefaultAsync();
+        if (storedRefreshToken is null)
+            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "TokenNotFound", Description = "This refresh token does not exist" } } };
+
+        if (DateTime.UtcNow > storedRefreshToken.ExpiryDate)
+            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "NotExpired", Description = "This refresh token has expired" } } };
+
+        if (storedRefreshToken.Invalidated)
+            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "InvalidToken", Description = "This refresh token has been invalidated" } } };
+
+        if (storedRefreshToken.Used)
+            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "InvalidToken", Description = "This refresh token has been used" } } };
+
+        if (storedRefreshToken.JwtId != jti)
+            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "InvalidToken", Description = "This refresh token does not match this JWT" } } };
+
+        storedRefreshToken.Used = true;
+        _refreshTokenRepo.Update(storedRefreshToken);
+
+        var user = await _userManager.FindByIdAsync(validatedToken.Claims.Single(x => x.Type == "userId").Value); // beware of magic claim name
+        return await GenerateAuthenticationResultForUserAsync(user);
     }
 
     private async Task<AuthenticationResult> GenerateAuthenticationResultForUserAsync(User user)
@@ -79,14 +152,14 @@ public class AuthorizationService : IAuthorizationService
             JwtId = accessToken.Id,
             UserId = user.Id,
             CreationTime = DateTime.UtcNow,
-            ExpiryDate = DateTime.UtcNow.AddMonths(_authConfiguration.RefreshTokenLifetime)
+            ExpiryDate = DateTime.UtcNow.AddDays(_authConfiguration.RefreshTokenLifetime)
         };
 
         _refreshTokenRepo.Add(refreshToken);
 
         return new AuthenticationResult
         {
-            Success = true,
+            Succeeded = true,
             Token = tokenHandler.WriteToken(accessToken),
             RefreshToken = refreshToken.Token
         };
@@ -112,5 +185,27 @@ public class AuthorizationService : IAuthorizationService
         return result.ToString();
     }
 
+    private static ClaimsPrincipal GetPrincipalFromToken(string token, TokenValidationParameters tokenValidationParameters)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
 
+        try
+        {
+            tokenValidationParameters.ValidateLifetime = false;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var validatedToken);
+            tokenValidationParameters.ValidateLifetime = true;
+            return !IsJwtWithValidSecurityAlgorithm(validatedToken) ? null : principal;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static bool IsJwtWithValidSecurityAlgorithm(SecurityToken validatedToken)
+    {
+        return validatedToken is JwtSecurityToken jwtSecurityToken &&
+               jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                   StringComparison.InvariantCultureIgnoreCase);
+    }
 }
