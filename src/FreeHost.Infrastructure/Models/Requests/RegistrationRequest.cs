@@ -1,7 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using FreeHost.Infrastructure.Utilities;
-
-namespace FreeHost.Infrastructure.Models.Requests;
+﻿namespace FreeHost.Infrastructure.Models.Requests;
 
 public class RegistrationRequest
 {
@@ -10,7 +7,5 @@ public class RegistrationRequest
     public string Login { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-
-    [JsonConverter(typeof(ByteArrayConverter))]
-    public byte[] Photo { get; set; }
+    public string Photo { get; set; }
 }

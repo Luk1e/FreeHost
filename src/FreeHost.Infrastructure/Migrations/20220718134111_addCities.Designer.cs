@@ -4,6 +4,7 @@ using FreeHost.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FreeHost.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220718134111_addCities")]
+    partial class addCities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,21 @@ namespace FreeHost.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("AmenityPlace", b =>
+                {
+                    b.Property<int>("AmenitiesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlacesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AmenitiesId", "PlacesId");
+
+                    b.HasIndex("PlacesId");
+
+                    b.ToTable("AmenityPlace");
+                });
 
             modelBuilder.Entity("FreeHost.Infrastructure.Models.Authorization.RefreshToken", b =>
                 {
@@ -159,21 +176,6 @@ namespace FreeHost.Infrastructure.Migrations
                     b.ToTable("Amenities");
                 });
 
-            modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.AmenityPlace", b =>
-                {
-                    b.Property<int>("AmenitiesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlacesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AmenitiesId", "PlacesId");
-
-                    b.HasIndex("PlacesId");
-
-                    b.ToTable("AmenityPlace");
-                });
-
             modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.AvailableDate", b =>
                 {
                     b.Property<int>("Id")
@@ -209,7 +211,7 @@ namespace FreeHost.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cities");
+                    b.ToTable("City");
                 });
 
             modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.Photo", b =>
@@ -224,7 +226,7 @@ namespace FreeHost.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("PlaceId")
+                    b.Property<int?>("PlaceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -262,14 +264,9 @@ namespace FreeHost.Infrastructure.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Places");
                 });
@@ -407,18 +404,7 @@ namespace FreeHost.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("FreeHost.Infrastructure.Models.Authorization.RefreshToken", b =>
-                {
-                    b.HasOne("FreeHost.Infrastructure.Models.Authorization.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.AmenityPlace", b =>
+            modelBuilder.Entity("AmenityPlace", b =>
                 {
                     b.HasOne("FreeHost.Infrastructure.Models.Hosting.Amenity", null)
                         .WithMany()
@@ -433,6 +419,17 @@ namespace FreeHost.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FreeHost.Infrastructure.Models.Authorization.RefreshToken", b =>
+                {
+                    b.HasOne("FreeHost.Infrastructure.Models.Authorization.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.AvailableDate", b =>
                 {
                     b.HasOne("FreeHost.Infrastructure.Models.Hosting.Place", null)
@@ -444,9 +441,7 @@ namespace FreeHost.Infrastructure.Migrations
                 {
                     b.HasOne("FreeHost.Infrastructure.Models.Hosting.Place", null)
                         .WithMany("Photos")
-                        .HasForeignKey("PlaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PlaceId");
                 });
 
             modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.Place", b =>
@@ -457,13 +452,7 @@ namespace FreeHost.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FreeHost.Infrastructure.Models.Authorization.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("City");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

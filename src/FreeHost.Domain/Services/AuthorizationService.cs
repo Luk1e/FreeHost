@@ -4,7 +4,6 @@ using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using FreeHost.Infrastructure.Interfaces.Database;
-using FreeHost.Infrastructure.Interfaces.Repositories;
 using FreeHost.Infrastructure.Interfaces.Services;
 using FreeHost.Infrastructure.Models.Authorization;
 using FreeHost.Infrastructure.Models.Options;
@@ -42,9 +41,12 @@ public class AuthorizationService : IAuthorizationService
         var passwordCheck = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
         if (!passwordCheck.Succeeded)
             throw new UnauthorizedAccessException();
-        
 
-        return await GenerateAuthenticationResultForUserAsync(user);
+        var authResult = await GenerateAuthenticationResultForUserAsync(user);
+        authResult.FirstName = user.FirstName;
+        authResult.LastName = user.LastName;
+
+        return authResult;
     }
 
     public async Task<AuthenticationResult> RegisterAsync(RegistrationRequest request)

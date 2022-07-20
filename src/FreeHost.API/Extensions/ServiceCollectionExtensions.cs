@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using FreeHost.API.Mapper;
+using FreeHost.Domain.Mapper;
 using FreeHost.Domain.Services;
 using FreeHost.Infrastructure.Database;
 using FreeHost.Infrastructure.Interfaces.Database;
@@ -28,6 +28,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IRefreshTokenRepo, RefreshTokenRepo>();
+        services.AddScoped<ICityRepo, CityRepo>();
+        services.AddScoped<IAmenityRepo, AmenityRepo>();
+        services.AddScoped<IPlaceRepo, PlaceRepo>();
+        services.AddScoped<IUserRepo, UserRepo>();
+        services.AddScoped<IAmenityPlaceRepo, AmenityPlaceRepo>();
+        services.AddScoped<IPhotoRepo, PhotoRepo>();
 
         return services;
     }
@@ -35,6 +41,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IAuthorizationService, AuthorizationService>();
+        services.AddScoped<IHostingService, HostingService>();
 
         return services;
     }
@@ -61,7 +68,9 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection SetMapper(this IServiceCollection services)
     {
-        var mapperConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()));
+        
+
+        var mapperConfig = new MapperConfiguration(mc => mc.AddProfile<MappingProfile>());
         var mapper = mapperConfig.CreateMapper();
 
         services.AddSingleton(mapper);
