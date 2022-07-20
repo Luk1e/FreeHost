@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using FreeHost.Infrastructure.Interfaces.Database;
 using FreeHost.Infrastructure.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,31 +19,37 @@ public class Repository<T> : IRepository<T> where T : class
         _unitOfWork = unitOfWork;
     }
 
-    public void Add(T entity)
+    public virtual void Add(T entity)
     {
         DbSet.Add(entity);
         _unitOfWork.Commit();
     }
 
-    public void AddRange(IEnumerable<T> entities)
+    public virtual void AddRange(IEnumerable<T> entities)
     {
         DbSet.AddRange(entities);
         _unitOfWork.Commit();
     }
 
-    public void Delete(T entity)
+    public virtual void Delete(T entity)
     {
         DbSet.Remove(entity);
         _unitOfWork.Commit();
     }
 
-    public void Update(T entity)
+    public virtual void DeleteRange(IEnumerable<T> entities)
+    {
+        DbSet.RemoveRange(entities);
+        _unitOfWork.Commit();
+    }
+
+    public virtual void Update(T entity)
     {
         DbSet.Update(entity);
         _unitOfWork.Commit();
     }
 
-    public IQueryable<T> Get(Expression<Func<T, bool>> expression)
+    public virtual IQueryable<T> Get(Expression<Func<T, bool>> expression)
     {
         return DbSet.Where(expression);
     }
