@@ -1,5 +1,5 @@
 import React from "react";
-import './Loader.css'
+import '../css/components/Loader.css'
 function Loader() {
   return (
     <div className="loader">
