@@ -31,6 +31,16 @@ public class HostingService : IHostingService
         return placeDTOs;
     }
 
+    public PlaceDto GetUserPlace(int placeId, string userId)
+    {
+        var place = _placeRepo.Get(x => x.User.Id == userId && x.Id == placeId).SingleOrDefault() ??
+                    throw new ArgumentNullException(nameof(Place), "Place not found");
+        var placeDTO = _mapper.Map<PlaceDto>(place);
+        placeDTO.Owner = _mapper.Map<UserDto>(place.User);
+
+        return placeDTO;
+    }
+
     public void AddPlace(AddPlaceRequest request, string userId) => _placeRepo.Add(_mapper.Map<Place>(request), userId);
 
     public void EditPlace(EditPlaceRequest request, string userId)

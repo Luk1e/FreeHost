@@ -1,6 +1,7 @@
 ﻿using FreeHost.API.Extensions;
 using FreeHost.Infrastructure.Interfaces.Services;
 using FreeHost.Infrastructure.Models.Requests;
+using FreeHost.Infrastructure.Models.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,34 @@ public class HostingController : ControllerBase
         _hostingService = hostingService;
     }
 
+    [HttpGet("get/{id:int}")]
+    public async Task<IActionResult> Get(int id)
+    {
+        try
+        {
+            var userId = HttpContext.GetUserIdFromJwt();
+            var place = _hostingService.GetUserPlace(id, userId);
+
+            return Ok(place);
+        }
+        catch (ArgumentNullException e)
+        {
+            var errors = new List<ErrorResponse>
+            {
+                new() {Code = e.ParamName ?? string.Empty, Description = e.Message}
+            };
+            return BadRequest(errors);
+        }
+        catch (Exception e)
+        {
+            var errors = new List<ErrorResponse>
+            {
+                new() {Code = "InternalServerError", Description = e.Message}
+            };
+            return BadRequest(errors);
+        }
+    }
+
     [HttpGet("get")]
     public async Task<IActionResult> Get()
     {
@@ -30,7 +59,11 @@ public class HostingController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            var errors = new List<ErrorResponse>
+            {
+                new() {Code = "InternalServerError", Description = e.Message}
+            };
+            return BadRequest(errors);
         }
     }
 
@@ -46,7 +79,11 @@ public class HostingController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            var errors = new List<ErrorResponse>
+            {
+                new() {Code = "InternalServerError", Description = e.Message}
+            };
+            return BadRequest(errors);
         }
     }
 
@@ -62,11 +99,15 @@ public class HostingController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            var errors = new List<ErrorResponse>
+            {
+                new() {Code = "InternalServerError", Description = e.Message}
+            };
+            return BadRequest(errors);
         }
     }
 
-    [HttpDelete("delete")]
+    [HttpDelete("delete/{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         try
@@ -76,9 +117,21 @@ public class HostingController : ControllerBase
 
             return Ok();
         }
+        catch (ArgumentNullException e)
+        {
+            var errors = new List<ErrorResponse>
+            {
+                new() {Code = e.ParamName ?? string.Empty, Description = e.Message}
+            };
+            return BadRequest(errors);
+        }
         catch (Exception e)
         {
-            return BadRequest(e.Message);
+            var errors = new List<ErrorResponse>
+            {
+                new() {Code = "InternalServerError", Description = e.Message}
+            };
+            return BadRequest(errors);
         }
     }
 }

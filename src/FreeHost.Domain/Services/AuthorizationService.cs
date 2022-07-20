@@ -8,6 +8,7 @@ using FreeHost.Infrastructure.Interfaces.Services;
 using FreeHost.Infrastructure.Models.Authorization;
 using FreeHost.Infrastructure.Models.Options;
 using FreeHost.Infrastructure.Models.Requests;
+using FreeHost.Infrastructure.Models.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -36,11 +37,11 @@ public class AuthorizationService : IAuthorizationService
     {
         var user = _userManager.Users.SingleOrDefault(l => l.Login == request.Login);
         if (user == null)
-            throw new NullReferenceException("User was not found");
+            throw new NullReferenceException("User was not found.");
 
         var passwordCheck = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
         if (!passwordCheck.Succeeded)
-            throw new UnauthorizedAccessException();
+            throw new UnauthorizedAccessException("Incorrect login or password.");
 
         var authResult = await GenerateAuthenticationResultForUserAsync(user);
         authResult.FirstName = user.FirstName;
@@ -53,7 +54,7 @@ public class AuthorizationService : IAuthorizationService
     {
         if (_userManager.Users.SingleOrDefault(l => l.Login == request.Login) is not null)
         {
-            var errors = new List<IdentityError> { new() { Code = "DuplicateLogin", Description = $"Login '{request.Login}' is already taken." } };
+            var errors = new List<ErrorResponse> { new() { Code = "DuplicateLogin", Description = $"Login '{request.Login}' is already taken." } };
             return new AuthenticationResult
             {
                 Succeeded = false,
@@ -62,7 +63,7 @@ public class AuthorizationService : IAuthorizationService
         }
         if (_userManager.Users.SingleOrDefault(l => l.Email == request.Email) is not null)
         {
-            var errors = new List<IdentityError> { new() { Code = "DuplicateEmail", Description = $"Email '{request.Email}' is already taken." } };
+            var errors = new List<ErrorResponse> { new() { Code = "DuplicateEmail", Description = $"Email '{request.Email}' is already taken." } };
             return new AuthenticationResult
             {
                 Succeeded = false,
@@ -73,7 +74,6 @@ public class AuthorizationService : IAuthorizationService
         var user = _mapper.Map<User>(request);
         user.UserName = user.Email;
         var result = await _userManager.CreateAsync(user, request.Password);
-
         return result.Succeeded
             ? await AuthorizeAsync(_mapper.Map<AuthorizationRequest>(request))
             : _mapper.Map<AuthenticationResult>(result);
@@ -95,31 +95,31 @@ public class AuthorizationService : IAuthorizationService
 
         var validatedToken = GetPrincipalFromToken(request.AccessToken, tokenValidationParameters);
         if (validatedToken is null)
-            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "InvalidToken", Description = "Could not validate access token" } } };
+            return new AuthenticationResult { Errors = new[] { new ErrorResponse { Code = "InvalidToken", Description = "Could not validate access token" } } };
 
         var expiryDateUnix =
             long.Parse(validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
         var expiryDateTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             .AddSeconds(expiryDateUnix);
         if (expiryDateTimeUtc > DateTime.UtcNow)
-            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "NotExpired", Description = "This access token hasn't expired yet" } } };
+            return new AuthenticationResult { Errors = new[] { new ErrorResponse { Code = "NotExpired", Description = "This access token hasn't expired yet" } } };
 
         var jti = validatedToken.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
         var storedRefreshToken = await _refreshTokenRepo.Get(x => x.Token == request.RefreshToken).SingleOrDefaultAsync();
         if (storedRefreshToken is null)
-            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "TokenNotFound", Description = "This refresh token does not exist" } } };
+            return new AuthenticationResult { Errors = new[] { new ErrorResponse { Code = "TokenNotFound", Description = "This refresh token does not exist" } } };
 
         if (DateTime.UtcNow > storedRefreshToken.ExpiryDate)
-            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "NotExpired", Description = "This refresh token has expired" } } };
+            return new AuthenticationResult { Errors = new[] { new ErrorResponse { Code = "NotExpired", Description = "This refresh token has expired" } } };
 
         if (storedRefreshToken.Invalidated)
-            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "InvalidToken", Description = "This refresh token has been invalidated" } } };
+            return new AuthenticationResult { Errors = new[] { new ErrorResponse { Code = "InvalidToken", Description = "This refresh token has been invalidated" } } };
 
         if (storedRefreshToken.Used)
-            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "InvalidToken", Description = "This refresh token has been used" } } };
+            return new AuthenticationResult { Errors = new[] { new ErrorResponse { Code = "InvalidToken", Description = "This refresh token has been used" } } };
 
         if (storedRefreshToken.JwtId != jti)
-            return new AuthenticationResult { Errors = new[] { new IdentityError{ Code = "InvalidToken", Description = "This refresh token does not match this JWT" } } };
+            return new AuthenticationResult { Errors = new[] { new ErrorResponse { Code = "InvalidToken", Description = "This refresh token does not match this JWT" } } };
 
         storedRefreshToken.Used = true;
         _refreshTokenRepo.Update(storedRefreshToken);
