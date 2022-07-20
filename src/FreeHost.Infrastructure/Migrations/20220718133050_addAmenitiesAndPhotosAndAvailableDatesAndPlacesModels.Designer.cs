@@ -4,6 +4,7 @@ using FreeHost.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FreeHost.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220718133050_addAmenitiesAndPhotosAndAvailableDatesAndPlacesModels")]
+    partial class addAmenitiesAndPhotosAndAvailableDatesAndPlacesModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,24 +156,14 @@ namespace FreeHost.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PlaceId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("PlaceId");
+
                     b.ToTable("Amenities");
-                });
-
-            modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.AmenityPlace", b =>
-                {
-                    b.Property<int>("AmenitiesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlacesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AmenitiesId", "PlacesId");
-
-                    b.HasIndex("PlacesId");
-
-                    b.ToTable("AmenityPlace");
                 });
 
             modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.AvailableDate", b =>
@@ -195,23 +187,6 @@ namespace FreeHost.Infrastructure.Migrations
                     b.ToTable("AvailableDates");
                 });
 
-            modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.City", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cities");
-                });
-
             modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.Photo", b =>
                 {
                     b.Property<int>("Id")
@@ -224,7 +199,7 @@ namespace FreeHost.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("PlaceId")
+                    b.Property<int?>("PlaceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -246,8 +221,13 @@ namespace FreeHost.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CityId")
-                        .HasColumnType("int");
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DistanceFromTheCenter")
                         .HasColumnType("int");
@@ -262,14 +242,7 @@ namespace FreeHost.Infrastructure.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CityId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Places");
                 });
@@ -418,19 +391,11 @@ namespace FreeHost.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.AmenityPlace", b =>
+            modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.Amenity", b =>
                 {
-                    b.HasOne("FreeHost.Infrastructure.Models.Hosting.Amenity", null)
-                        .WithMany()
-                        .HasForeignKey("AmenitiesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FreeHost.Infrastructure.Models.Hosting.Place", null)
-                        .WithMany()
-                        .HasForeignKey("PlacesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Amenities")
+                        .HasForeignKey("PlaceId");
                 });
 
             modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.AvailableDate", b =>
@@ -444,26 +409,7 @@ namespace FreeHost.Infrastructure.Migrations
                 {
                     b.HasOne("FreeHost.Infrastructure.Models.Hosting.Place", null)
                         .WithMany("Photos")
-                        .HasForeignKey("PlaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.Place", b =>
-                {
-                    b.HasOne("FreeHost.Infrastructure.Models.Hosting.City", "City")
-                        .WithMany("Places")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FreeHost.Infrastructure.Models.Authorization.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("City");
-
-                    b.Navigation("User");
+                        .HasForeignKey("PlaceId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -517,13 +463,10 @@ namespace FreeHost.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.City", b =>
-                {
-                    b.Navigation("Places");
-                });
-
             modelBuilder.Entity("FreeHost.Infrastructure.Models.Hosting.Place", b =>
                 {
+                    b.Navigation("Amenities");
+
                     b.Navigation("AvailableDates");
 
                     b.Navigation("Photos");

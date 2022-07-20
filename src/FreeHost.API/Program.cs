@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using FreeHost.API.Extensions;
 using FreeHost.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.SetConfigurations(builder.Configuration);
 builder.Services.SetMapper();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddServices();
 builder.Services.SetIdentity();
