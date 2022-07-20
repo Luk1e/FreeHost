@@ -26,7 +26,6 @@ function LoginScreen() {
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(login(loginData, password));
-    // "Login", "Password_1"
   };
   const RegisterNavigator = () => {
     navigate("/register", { replace: true });

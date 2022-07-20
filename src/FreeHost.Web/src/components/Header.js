@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import {logout} from '../store/actions/userActions'
 
 
@@ -11,6 +11,9 @@ function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const logoutHandler = () => {
     dispatch(logout());
     navigate("/login");
@@ -18,7 +21,7 @@ function Header() {
   return (
     <div className="header-container">
       <div className="header-inner-container">
-        <h1 className="header-h1">username</h1>
+        <h1 className="header-h1">{userInfo.firstName +" " + userInfo.lastName}</h1>
         <button
           className="header-btn"
           onClick={() => {

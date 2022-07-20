@@ -60,8 +60,7 @@ function RegisterScreen() {
     e.preventDefault();
     if (!message) {
       imageToBase64(photo).then((base64String) => {
-        let byteImage = _base64ToArrayBuffer(base64String);
-        dispatch(register(firstName, email, password, loginData, byteImage));
+        dispatch(register(firstName,lastName, email, password, loginData, base64String));
       });
     }
   };
@@ -82,16 +81,6 @@ function RegisterScreen() {
     });
   };
 
-  function _base64ToArrayBuffer(base64) {
-    var binary_string = window.atob(base64);
-    var len = binary_string.length;
-    var bytes = new Uint8Array(len);
-    for (var i = 0; i < len; i++) {
-      bytes[i] = binary_string.charCodeAt(i);
-    }
-    var array = [].slice.call(bytes);
-    return array;
-  }
   return (
     <div className="register-page">
       <div className="register-container">
