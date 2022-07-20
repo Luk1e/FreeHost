@@ -1,7 +1,7 @@
-﻿using System.Text;
-using FreeHost.Infrastructure.Interfaces.Services;
+﻿using FreeHost.Infrastructure.Interfaces.Services;
 using FreeHost.Infrastructure.Models.Authorization;
 using FreeHost.Infrastructure.Models.Requests;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreeHost.API.Controllers;
@@ -21,7 +21,13 @@ public class AuthorizationController : ControllerBase
     public async Task<IActionResult> Authorize([FromBody] AuthorizationRequest request)
     {
         if (string.IsNullOrEmpty(request.Login) || string.IsNullOrEmpty(request.Password))
-            return BadRequest("Invalid login or password");
+        {
+            var errors = new List<IdentityError>
+            {
+                new() {Code = "InvalidCredentials", Description = "Invalid login or password"}
+            };
+            return BadRequest(errors);
+        }
 
         try
         {
@@ -35,15 +41,27 @@ public class AuthorizationController : ControllerBase
         }
         catch (NullReferenceException e)
         {
-            return BadRequest(e.Message);
+            var error = new List<IdentityError>
+            {
+                new() {Code = string.Empty, Description = e.Message}
+            };
+            return BadRequest(error);
         }
         catch (UnauthorizedAccessException)
         {
-            return BadRequest("Incorrect login or password");
+            var errors = new List<IdentityError>
+            {
+                new() {Code = "IncorrectCredentials", Description = "Incorrect login or password"}
+            };
+            return BadRequest(errors);
         }
         catch (Exception)
         {
-            return BadRequest("InternalServerError");
+            var errors = new List<IdentityError>
+            {
+                new() {Code = "InternalServerError", Description = "Internal Server Error"}
+            };
+            return BadRequest(errors);
         }
     }
 
@@ -51,19 +69,45 @@ public class AuthorizationController : ControllerBase
     public async Task<IActionResult> Register(RegistrationRequest request)
     {
         if (string.IsNullOrEmpty(request.Login))
-            return BadRequest("Login cannot be empty");
-        
+        {
+            var errors = new List<IdentityError>
+            {
+                new() {Code = "InvalidLogin", Description = "Login cannot be empty"}
+            };
+            return BadRequest(errors);
+        }
         if (string.IsNullOrEmpty(request.Password))
-            return BadRequest("Password cannot be empty");
-        
+        {
+            var errors = new List<IdentityError>
+            {
+                new() {Code = "InvalidPassword", Description = "Password cannot be empty"}
+            };
+            return BadRequest(errors);
+        }
         if (string.IsNullOrEmpty(request.Email))
-            return BadRequest("Email cannot be empty");
-        
+        {
+            var errors = new List<IdentityError>
+            {
+                new() {Code = "InvalidEmail", Description = "Email cannot be empty"}
+            };
+            return BadRequest(errors);
+        }
         if (string.IsNullOrEmpty(request.FirstName))
-            return BadRequest("First name cannot be empty");
-
+        {
+            var errors = new List<IdentityError>
+            {
+                new() {Code = "InvalidFirstName", Description = "First name cannot be empty"}
+            };
+            return BadRequest(errors);
+        }
         if (string.IsNullOrEmpty(request.LastName))
-            return BadRequest("Last name cannot be empty");
+        {
+            var errors = new List<IdentityError>
+            {
+                new() {Code = "InvalidLastName", Description = "Last name cannot be empty"}
+            };
+            return BadRequest(errors);
+        }
 
         try
         {
@@ -78,20 +122,25 @@ public class AuthorizationController : ControllerBase
         }
         catch (AggregateException passwordException)
         {
-            var sb = new StringBuilder();
-            foreach (var ex in passwordException.InnerExceptions)
-            {
-                sb.AppendLine(ex.Message);
-            }
-            return BadRequest(sb.ToString());
+            var errors = passwordException.InnerExceptions
+                .Select(ex => new IdentityError {Code = string.Empty, Description = ex.Message});
+            return BadRequest(errors);
         }
         catch (UnauthorizedAccessException)
         {
-            return BadRequest("This email is already in use");
+            var errors = new List<IdentityError>
+            {
+                new() {Code = "EmailInUse", Description = "This email is already in use"}
+            };
+            return BadRequest(errors);
         }
         catch (Exception)
         {
-            return BadRequest("InternalServerError");
+            var errors = new List<IdentityError>
+            {
+                new() {Code = "InternalServerError", Description = "Internal Server Error"}
+            };
+            return BadRequest(errors);
         }
     }
 
@@ -107,7 +156,11 @@ public class AuthorizationController : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest();
+            var errors = new List<IdentityError>
+            {
+                new() {Code = "InternalServerError", Description = "Internal Server Error"}
+            };
+            return BadRequest(errors);
         }
     }
 }
