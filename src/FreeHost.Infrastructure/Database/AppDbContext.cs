@@ -33,9 +33,15 @@ public class AppDbContext : IdentityDbContext<User>
 
         builder.Entity<AmenityPlace>()
             .HasKey(k => new { k.AmenitiesId, k.PlacesId });
+        
         builder.Entity<Place>()
             .HasMany(x => x.Amenities)
             .WithMany(x => x.Places)
             .UsingEntity<AmenityPlace>();
+
+        builder.Entity<AvailableDate>()
+            .HasOne<Place>()
+            .WithMany(x => x.AvailableDates)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

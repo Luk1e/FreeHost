@@ -1,4 +1,4 @@
-﻿namespace FreeHost.Infrastructure.Models.Authorization;
+﻿namespace FreeHost.Infrastructure.Models.Requests;
 
 public class RefreshTokenRequest
 {

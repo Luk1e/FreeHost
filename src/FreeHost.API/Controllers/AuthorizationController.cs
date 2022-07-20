@@ -1,6 +1,6 @@
 ﻿using FreeHost.Infrastructure.Interfaces.Services;
-using FreeHost.Infrastructure.Models.Authorization;
 using FreeHost.Infrastructure.Models.Requests;
+using FreeHost.Infrastructure.Models.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +22,7 @@ public class AuthorizationController : ControllerBase
     {
         if (string.IsNullOrEmpty(request.Login) || string.IsNullOrEmpty(request.Password))
         {
-            var errors = new List<IdentityError>
+            var errors = new List<ErrorResponse>
             {
                 new() {Code = "InvalidCredentials", Description = "Invalid login or password"}
             };
@@ -41,25 +41,25 @@ public class AuthorizationController : ControllerBase
         }
         catch (NullReferenceException e)
         {
-            var error = new List<IdentityError>
+            var error = new List<ErrorResponse>
             {
-                new() {Code = string.Empty, Description = e.Message}
+                new() {Code = "UserNotFound", Description = e.Message}
             };
             return BadRequest(error);
         }
-        catch (UnauthorizedAccessException)
+        catch (UnauthorizedAccessException e)
         {
-            var errors = new List<IdentityError>
+            var errors = new List<ErrorResponse>
             {
-                new() {Code = "IncorrectCredentials", Description = "Incorrect login or password"}
+                new() {Code = "IncorrectCredentials", Description = e.Message}
             };
             return BadRequest(errors);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            var errors = new List<IdentityError>
+            var errors = new List<ErrorResponse>
             {
-                new() {Code = "InternalServerError", Description = "Internal Server Error"}
+                new() {Code = "InternalServerError", Description = e.Message}
             };
             return BadRequest(errors);
         }
@@ -70,7 +70,7 @@ public class AuthorizationController : ControllerBase
     {
         if (string.IsNullOrEmpty(request.Login))
         {
-            var errors = new List<IdentityError>
+            var errors = new List<ErrorResponse>
             {
                 new() {Code = "InvalidLogin", Description = "Login cannot be empty"}
             };
@@ -78,7 +78,7 @@ public class AuthorizationController : ControllerBase
         }
         if (string.IsNullOrEmpty(request.Password))
         {
-            var errors = new List<IdentityError>
+            var errors = new List<ErrorResponse>
             {
                 new() {Code = "InvalidPassword", Description = "Password cannot be empty"}
             };
@@ -86,7 +86,7 @@ public class AuthorizationController : ControllerBase
         }
         if (string.IsNullOrEmpty(request.Email))
         {
-            var errors = new List<IdentityError>
+            var errors = new List<ErrorResponse>
             {
                 new() {Code = "InvalidEmail", Description = "Email cannot be empty"}
             };
@@ -94,7 +94,7 @@ public class AuthorizationController : ControllerBase
         }
         if (string.IsNullOrEmpty(request.FirstName))
         {
-            var errors = new List<IdentityError>
+            var errors = new List<ErrorResponse>
             {
                 new() {Code = "InvalidFirstName", Description = "First name cannot be empty"}
             };
@@ -102,7 +102,7 @@ public class AuthorizationController : ControllerBase
         }
         if (string.IsNullOrEmpty(request.LastName))
         {
-            var errors = new List<IdentityError>
+            var errors = new List<ErrorResponse>
             {
                 new() {Code = "InvalidLastName", Description = "Last name cannot be empty"}
             };
@@ -123,22 +123,22 @@ public class AuthorizationController : ControllerBase
         catch (AggregateException passwordException)
         {
             var errors = passwordException.InnerExceptions
-                .Select(ex => new IdentityError {Code = string.Empty, Description = ex.Message});
+                .Select(ex => new ErrorResponse { Code = "InvalidPassword", Description = ex.Message});
             return BadRequest(errors);
         }
-        catch (UnauthorizedAccessException)
+        catch (UnauthorizedAccessException e)
         {
-            var errors = new List<IdentityError>
+            var errors = new List<ErrorResponse>
             {
-                new() {Code = "EmailInUse", Description = "This email is already in use"}
+                new() {Code = "IncorrectCredentials", Description = e.Message}
             };
             return BadRequest(errors);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            var errors = new List<IdentityError>
+            var errors = new List<ErrorResponse>
             {
-                new() {Code = "InternalServerError", Description = "Internal Server Error"}
+                new() {Code = "InternalServerError", Description = e.Message}
             };
             return BadRequest(errors);
         }
@@ -154,11 +154,11 @@ public class AuthorizationController : ControllerBase
                 return Ok(authResult);
             return BadRequest(authResult.Errors);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            var errors = new List<IdentityError>
+            var errors = new List<ErrorResponse>
             {
-                new() {Code = "InternalServerError", Description = "Internal Server Error"}
+                new() {Code = "InternalServerError", Description = e.Message}
             };
             return BadRequest(errors);
         }
