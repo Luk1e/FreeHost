@@ -10,4 +10,6 @@ public interface IHostingService
     void AddPlace(AddPlaceRequest request, string userId);
     void EditPlace(EditPlaceRequest request, string userId);
     void DeletePlace(int placeId, string userId);
+    IEnumerable<string> GetAmenities();
+    IEnumerable<string> GetCities();
 }

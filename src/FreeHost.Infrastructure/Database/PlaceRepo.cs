@@ -53,7 +53,7 @@ public class PlaceRepo : Repository<Place>, IPlaceRepo
     {
         return base.Get(expression)
             .Include(c => c.City)
-            .Include(ad => ad.AvailableDates)
+            .Include(ad => ad.BookedDates)
             .Include(a => a.Amenities)
             .Include(p => p.Photos)
             .Include(u => u.User);
@@ -62,13 +62,13 @@ public class PlaceRepo : Repository<Place>, IPlaceRepo
     private Place PopulatePlace(Place entity, string userId)
     {
         var city = _cityRepo.Get(x => x.Name == entity.City.Name).SingleOrDefault() ??
-                   throw new ArgumentNullException(nameof(City), "City not found");
+                   throw new ArgumentNullException(nameof(City), $"City '{entity.City.Name}' not found");
         entity.City = city;
 
         var amenities = new List<Amenity>(entity.Amenities.Count());
         amenities.AddRange(entity.Amenities.Select(amenitySrc =>
             _amenityRepo.Get(x => x.Name == amenitySrc.Name).SingleOrDefault() ??
-            throw new ArgumentNullException(nameof(Amenity), "Amenity not found")));
+            throw new ArgumentNullException(nameof(Amenity), $"Amenity '{amenitySrc.Name}' not found")));
         entity.Amenities = amenities;
 
         entity.User = _userRepo.Get(x => x.Id == userId).SingleOrDefault() ??

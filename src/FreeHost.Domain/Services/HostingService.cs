@@ -11,11 +11,15 @@ public class HostingService : IHostingService
 {
     private readonly IMapper _mapper;
     private readonly IPlaceRepo _placeRepo;
+    private readonly IAmenityRepo _amenityRepo;
+    private readonly ICityRepo _cityRepo;
 
-    public HostingService(IMapper mapper, IPlaceRepo placeRepo)
+    public HostingService(IMapper mapper, IPlaceRepo placeRepo, IAmenityRepo amenityRepo, ICityRepo cityRepo)
     {
         _mapper = mapper;
         _placeRepo = placeRepo;
+        _amenityRepo = amenityRepo;
+        _cityRepo = cityRepo;
     }
 
     public IEnumerable<PlaceDto> GetUserPlaces(string userId)
@@ -52,5 +56,15 @@ public class HostingService : IHostingService
     public void DeletePlace(int placeId, string userId)
     {
         _placeRepo.Delete(placeId, userId);
+    }
+
+    public IEnumerable<string> GetAmenities()
+    {
+        return _amenityRepo.Get(x => !string.IsNullOrEmpty(x.Name)).Select(x => x.Name);
+    }
+
+    public IEnumerable<string> GetCities()
+    {
+        return _cityRepo.Get(x => !string.IsNullOrEmpty(x.Name)).Select(x => x.Name);
     }
 }

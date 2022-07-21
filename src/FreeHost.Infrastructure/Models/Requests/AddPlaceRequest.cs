@@ -14,9 +14,6 @@ public class AddPlaceRequest
     public string Address { get; set; }
 
     [Required]
-    public IEnumerable<DateTime> AvailableDates { get; set; }
-
-    [Required]
     public int? NumberOfBeds { get; set; }
 
     [Required]
@@ -27,7 +24,4 @@ public class AddPlaceRequest
 
     [Required]
     public int? DistanceFromTheCenter { get; set; }
-
-    [Required]
-    public int? Price { get; set; }
 }
