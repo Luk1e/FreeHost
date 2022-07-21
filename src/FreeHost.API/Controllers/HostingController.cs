@@ -134,4 +134,16 @@ public class HostingController : ControllerBase
             return BadRequest(errors);
         }
     }
+
+    [HttpGet("amenities")]
+    public async Task<IActionResult> GetAmenities()
+    {
+        return Ok(_hostingService.GetAmenities());
+    }
+
+    [HttpGet("cities")]
+    public async Task<IActionResult> GetCities()
+    {
+        return Ok(_hostingService.GetCities());
+    }
 }

@@ -11,7 +11,7 @@ public class AppDbContext : IdentityDbContext<User>
     public DbSet<Amenity> Amenities { get; set; }
     public DbSet<Photo> Photos { get; set; }
     public DbSet<Place> Places { get; set; }
-    public DbSet<AvailableDate> AvailableDates { get; set; }
+    public DbSet<BookedDate> BookedDates { get; set; }
     public DbSet<City> Cities { get; set; }
     public DbSet<AmenityPlace> AmenityPlace { get; set; }
 
@@ -39,9 +39,9 @@ public class AppDbContext : IdentityDbContext<User>
             .WithMany(x => x.Places)
             .UsingEntity<AmenityPlace>();
 
-        builder.Entity<AvailableDate>()
+        builder.Entity<BookedDate>()
             .HasOne<Place>()
-            .WithMany(x => x.AvailableDates)
+            .WithMany(x => x.BookedDates)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
