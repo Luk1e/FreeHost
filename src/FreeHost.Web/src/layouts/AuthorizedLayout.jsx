@@ -16,8 +16,12 @@ function AuthorizedLayout() {
   }, []);
   return (
     <>
-      <Header />
-      <Outlet />
+      {userInfo && (
+        <>
+          <Header />
+          <Outlet />
+        </>
+      )}
     </>
   );
 }
