@@ -23,8 +23,6 @@ public class MappingProfile : Profile
 
         CreateMap<string, City>().ConvertUsing<StringToCityConverter>();
         CreateMap<City, string>().ConvertUsing<CityToStringConverter>();
-        CreateMap<IEnumerable<DateTime>, IEnumerable<BookedDate>>().ConvertUsing<DateTimeToBookedDateConverter>();
-        CreateMap<IEnumerable<BookedDate>, IEnumerable <DateTime>>().ConvertUsing<BookedDateToDateTimeConverter>();
         CreateMap<IEnumerable<string>, IEnumerable<Amenity>>().ConvertUsing<StringToAmenityConverter>();
         CreateMap<IEnumerable<Amenity>, IEnumerable<string>>().ConvertUsing<AmenityToStringConverter>();
         CreateMap<IEnumerable<string>, IEnumerable<Photo>>().ConvertUsing<StringToPhotoConverter>();
