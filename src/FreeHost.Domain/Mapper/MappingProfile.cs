@@ -4,7 +4,6 @@ using FreeHost.Infrastructure.Models.Authorization;
 using FreeHost.Infrastructure.Models.DTOs;
 using FreeHost.Infrastructure.Models.Hosting;
 using FreeHost.Infrastructure.Models.Requests;
-using FreeHost.Infrastructure.Models.Responses;
 using Microsoft.AspNetCore.Identity;
 
 namespace FreeHost.Domain.Mapper;
@@ -23,8 +22,6 @@ public class MappingProfile : Profile
 
         CreateMap<string, City>().ConvertUsing<StringToCityConverter>();
         CreateMap<City, string>().ConvertUsing<CityToStringConverter>();
-        CreateMap<IEnumerable<DateTime>, IEnumerable<BookedDate>>().ConvertUsing<DateTimeToBookedDateConverter>();
-        CreateMap<IEnumerable<BookedDate>, IEnumerable <DateTime>>().ConvertUsing<BookedDateToDateTimeConverter>();
         CreateMap<IEnumerable<string>, IEnumerable<Amenity>>().ConvertUsing<StringToAmenityConverter>();
         CreateMap<IEnumerable<Amenity>, IEnumerable<string>>().ConvertUsing<AmenityToStringConverter>();
         CreateMap<IEnumerable<string>, IEnumerable<Photo>>().ConvertUsing<StringToPhotoConverter>();
@@ -32,6 +29,7 @@ public class MappingProfile : Profile
 
         CreateMap<AddPlaceRequest, Place>();
         CreateMap<EditPlaceRequest, Place>();
+        CreateMap<BookedDate, BookedDatesDto>().ReverseMap();
         CreateMap<Place, PlaceDto>();
     }
 }
