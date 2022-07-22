@@ -12,6 +12,7 @@ builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddServices();
 builder.Services.SetIdentity();
 builder.Services.SetAuthentication();
+builder.Services.AddSwagger();
 
 var app = builder.Build();
 
@@ -22,6 +23,9 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
+
+app.UseSwagger();
+app.UseSwaggerUI(x => x.SwaggerEndpoint("/swagger/v1/swagger.json", "FreeHostAPI"));
 
 app.UseAuthorization();
 

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Reflection;
+using AutoMapper;
 using FreeHost.Domain.Mapper;
 using FreeHost.Domain.Services;
 using FreeHost.Infrastructure.Database;
@@ -10,8 +11,10 @@ using FreeHost.Infrastructure.Models.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 namespace FreeHost.API.Extensions;
 
@@ -98,6 +101,54 @@ public static class ServiceCollectionExtensions
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+        return services;
+    }
+
+    public static IServiceCollection AddSwagger(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(options =>
+        {
+            var jwtSecurityScheme = new OpenApiSecurityScheme
+            {
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Name = "Authorization",
+                Description = @"JWT Authorization header using the Bearer scheme.
+                      Enter your token in the text input below.
+                      Example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.----'",
+
+                Reference = new OpenApiReference
+                {
+                    Id = JwtBearerDefaults.AuthenticationScheme,
+                    Type = ReferenceType.SecurityScheme
+                }
+            };
+
+            options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    jwtSecurityScheme, Array.Empty<string>()
+                }
+            });
+
+            options.CustomSchemaIds(o => o.FullName);
+
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+        });
+
+        /*services.AddSwaggerGenWithConventionalRoutes(options =>
+        {
+            options.IgnoreTemplateFunc = (template) => template.StartsWith("api/");
+            options.SkipDefaults = true;
+        });
+
+        services.AddSwaggerGenNewtonsoftSupport();*/
 
         return services;
     }
