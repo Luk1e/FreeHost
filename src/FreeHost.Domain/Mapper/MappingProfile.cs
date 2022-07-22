@@ -30,6 +30,7 @@ public class MappingProfile : Profile
 
         CreateMap<AddPlaceRequest, Place>();
         CreateMap<EditPlaceRequest, Place>();
+        CreateMap<BookedDate, BookedDatesDto>().ReverseMap();
         CreateMap<Place, PlaceDto>();
     }
 }
