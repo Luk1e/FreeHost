@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserApartments } from "../../store/actions/userActions";
 import Message from "../../components/Message";
 import { useNavigate } from "react-router-dom";
+import Apartment from "../../components/Apartment";
 
 import "../../css/pages/ProfileScreen.css";
 
@@ -11,13 +12,12 @@ function ProfileScreen() {
   const navigate = useNavigate();
 
   const userApartments = useSelector((state) => state.userApartments);
-  const { error, loading, userApartments: userApartmentsList } = userApartments;
+  const { error, loading, apartments } = userApartments;
 
   useEffect(() => {
-    dispatch(getUserApartments);
-    
-  console.log(userApartmentsList);
-  }, [userApartments, dispatch]);
+    dispatch(getUserApartments());
+
+  }, [dispatch]);
 
   return (
     <div className="profile-page">
@@ -39,13 +39,19 @@ function ProfileScreen() {
       </div>
       <div className="profile-apartments-container">
         <div className="profile-apartments-duo">
-        
           <h1 className="profile-header">My Apartments</h1>
-          <button className="profile-btn" onClick={()=> navigate("/apartments/create")}>CREATE</button>
+          <button
+            className="profile-btn"
+            onClick={() => navigate("/apartments/create")}
+          >
+            CREATE
+          </button>
         </div>
-        {Object.keys(userApartmentsList).length !== 0 ? (
-          <div>s</div>
-        ) : (
+        {Object.keys(apartments).length !== 0 ? 
+         apartments.map(element => {
+           return <Apartment key={element.id} apartment={element} className="profile-apartment"/>
+         })
+         : (
           <Message>NO APARTMENTS</Message>
         )}
       </div>

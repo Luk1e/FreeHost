@@ -1,12 +1,12 @@
 //       REACT
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 //       REDUX
 import { useDispatch, useSelector } from "react-redux";
 import { getCities, getAmenities } from "../../store/actions/systemActions";
-import { createApartment } from "../../store/actions/userActions";
-import { USER_CREATE_APARTMENTS_RESET } from "../../store/constants/userConstants";
+import { getApartment, updateApartment } from "../../store/actions/userActions";
+import { USER_UPDATE_APARTMENTS_RESET } from "../../store/constants/userConstants";
 
 //       OTHER
 import { imageToBase64 } from "../../functions/Functions";
@@ -18,7 +18,7 @@ import "../../css/pages/CreateApartmentScreen.css";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 
-function CreateApartmentScreen() {
+function EditApartmentScreen() {
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
@@ -27,8 +27,9 @@ function CreateApartmentScreen() {
   const [photo, setPhoto] = useState("");
   const [distance, setDistance] = useState("");
 
+  const [firstTime, setFirstTime] = useState(true);
   const [message, setMessage] = useState("");
-
+  const { id } = useParams();
   //                  GET CITY LIST
   const systemCities = useSelector((state) => state.systemCities);
   const { error, loading, cities: citiesList } = systemCities;
@@ -41,14 +42,21 @@ function CreateApartmentScreen() {
     amenities: amenitiesList,
   } = systemAmenities;
 
-
-  const  userCreateApartments = useSelector((state) => state.userCreateApartments);
+  const userGetApartment = useSelector((state) => state.userGetApartment);
   const {
-    error: createError,
-    loading: createLoading,
-    success,
-  } = userCreateApartments;
+    error: apartmentError,
+    loading: apartmentLoading,
+    apartment,
+  } = userGetApartment;
 
+  const userUpdateApartments = useSelector(
+    (state) => state.userUpdateApartments
+  );
+  const {
+    error: updateError,
+    loading: updateLoading,
+    success,
+  } = userUpdateApartments;
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -56,17 +64,36 @@ function CreateApartmentScreen() {
   useEffect(() => {
     dispatch(getCities());
     dispatch(getAmenities());
-    if(success){
-      
-      dispatch({type:USER_CREATE_APARTMENTS_RESET})
-      navigate("/profile")
-    }
-  }, [navigate, dispatch,success]);
 
+    if (success) {
+      dispatch({ type: USER_UPDATE_APARTMENTS_RESET });
+      navigate("/profile");
+    }
+
+    if (!apartment.name) {
+      dispatch(getApartment(id));
+    } else {
+      setName(apartment.name);
+      setAddress(apartment.address);
+      setCity(apartment.city);
+      setAmenities(apartment.amenities);
+      setPhoto(apartment.photos[0]);
+      setNumberOfBeds(apartment.numberOfBeds);
+      setDistance(apartment.distanceFromTheCenter);
+    }
+  }, [apartment, navigate, dispatch,success]);
+
+  if (firstTime && photo) {
+    document.getElementById("image").src = "data:image/png;base64," + photo;
+  }
   //                PHOTO
   const UploadPhoto = (e) => {
+    setFirstTime(false);
+    document.getElementById("image").src = URL.createObjectURL(
+      e.target.files[0]
+    );
+
     setPhoto(e.target.files[0]);
- 
   };
 
   //                LIMIT AMENITIES
@@ -95,25 +122,40 @@ function CreateApartmentScreen() {
   const submitHandler = (e) => {
     e.preventDefault();
     if (!message) {
-      imageToBase64(photo).then((base64String) => {
-        dispatch(createApartment(
-          name,
-          city,
-          address,
-          amenities,
-          numberOfBeds,
-          base64String,
-          distance
-        ));
-      });
+      firstTime
+        ? dispatch(
+            updateApartment(
+              apartment.id,
+              name,
+              city,
+              address,
+              amenities,
+              numberOfBeds,
+              photo,
+              distance
+            )
+          )
+        : imageToBase64(photo).then((base64String) => {
+            dispatch(
+              updateApartment(
+                apartment.id,
+                name,
+                city,
+                address,
+                amenities,
+                numberOfBeds,
+                base64String,
+                distance
+              )
+            );
+          });
     }
-   
   };
 
   return (
     <div className="create-app-page">
-       {createLoading && (<Loader />)}
-       {createError && <Message>{createError}</Message>}
+      {apartmentLoading && <Loader />}
+      {apartmentError && <Message>{apartmentError}</Message>}
       <h1 className="create-app-header">Add an apartment</h1>
       <form onSubmit={submitHandler} className="create-app-container">
         <div className="create-app-duoL">
@@ -214,7 +256,7 @@ function CreateApartmentScreen() {
             className="create-app-btn"
             onClick={() => Validation()}
           >
-            create
+            update
           </button>
         </div>
       </form>
@@ -222,4 +264,4 @@ function CreateApartmentScreen() {
   );
 }
 
-export default CreateApartmentScreen;
+export default EditApartmentScreen;

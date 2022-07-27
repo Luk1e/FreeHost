@@ -80,6 +80,11 @@
   cursor: pointer;
 }
 
+.profile-apartment{
+  background-color: red !important;
+  width: 100px;
+  height: 100px;
+}
 
 @media screen and (max-width: 900px) {
   .profile-apartments-duo{
@@ -91,4 +96,8 @@
     padding-right: 5vw;
     margin-bottom: 10vh;
   }
+  .profile-apartments-container {
+    width: 90%;
+  }
 }
+

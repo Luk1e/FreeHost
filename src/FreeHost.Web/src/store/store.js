@@ -4,7 +4,9 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import {
   userLoginReducer,
   userRegisterReducer,
-  userApartmentsReducer,userCreateApartmentReducer
+  userApartmentsReducer,userCreateApartmentReducer,
+  userDeleteApartmentReducer,
+  userGetApartmentReducer,userUpdateApartmentReducer
 } from "./reducers/userReducers";
 import {
   systemCitiesReducer,
@@ -15,7 +17,10 @@ const reducer = combineReducers({
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userApartments: userApartmentsReducer,
+  userGetApartment:userGetApartmentReducer,
   userCreateApartments:userCreateApartmentReducer,
+  userUpdateApartments:userUpdateApartmentReducer,
+  userDeleteApartments:userDeleteApartmentReducer,
   systemCities: systemCitiesReducer,
   systemAmenities: systemAmenitiesReducer,
 });
