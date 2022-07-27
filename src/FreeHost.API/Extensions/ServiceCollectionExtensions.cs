@@ -11,7 +11,6 @@ using FreeHost.Infrastructure.Models.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -45,6 +44,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped<IHostingService, HostingService>();
+        services.AddScoped<ISearchService, SearchService>();
 
         return services;
     }
