@@ -4,6 +4,8 @@ import RegisterScreen from "./pages/app/RegisterScreen";
 import LoginScreen from "./pages/app/LoginScreen";
 import ProfileScreen from "./pages/auth/ProfileScreen";
 import SearchScreen from "./pages/auth/SearchScreen";
+import CreateApartmentScreen from "./pages/auth/CreateApartmentScreen";
+import EditApartmentScreen from "./pages/auth/EditApartmentScreen"
 
 import AuthorizedLayout from "./layouts/AuthorizedLayout";
 import HomeLayout from "./layouts/HomeLayout";
@@ -22,6 +24,8 @@ export default function App() {
         <Route element={<AuthorizedLayout />}>
           <Route path="profile" element={<ProfileScreen />} />
           <Route path="/" element={<SearchScreen />} />
+          <Route path="/apartments/create" element={<CreateApartmentScreen />} />
+          <Route path="/apartments/:id/edit" element={<EditApartmentScreen/>}/>
         </Route>
       </Routes>
     </Router>

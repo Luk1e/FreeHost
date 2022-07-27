@@ -30,7 +30,7 @@ function Header() {
         >
           cabinet <i className="fa-solid fa-caret-down"></i>
           {isVisible && (
-            <div class="dropdown-content">
+            <div className="dropdown-content">
               <Link to='/profile'>Profile</Link>
               <Link to='/myguests'>My guests</Link>
               <Link to='/mybookings'>My bookings</Link>

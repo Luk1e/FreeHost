@@ -1,0 +1,128 @@
+.create-app-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.create-app-header {
+    text-align: center;
+  text-transform: uppercase;
+  color: #03c8a8;
+  font-size: 3rem;
+  margin-top: 3vh;
+}
+.create-app-container {
+  margin-top: 10vh;
+  width: 80%;
+  background-color: #deebdd;
+  background-image: linear-gradient(315deg, #deebdd 0%, #bbdbbe 74%);
+  border-radius: 100px;
+  display: flex;
+  justify-content: space-evenly;
+
+  margin-bottom: 10vh;
+}
+.create-app-duoL {
+  margin-top: 10vh;
+  width: 40%;
+  margin-bottom: 10vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.create-app-duoR {
+  margin-top: 10vh;
+  width: 40%;
+  margin-bottom: 10vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.create-app-btn{
+  margin-top: 3vh;
+  width: 20%;
+  min-width:max-content;
+  height: 3vh;
+  min-height: max-content;
+  min-height: 5vh;
+  border-radius: 10px;
+  font-size: large;
+  color: white;
+  background-color: #ss89d8d3;
+  background-image: linear-gradient(315deg, #89d8d3 0%, #03c8a8 74%);
+  border-radius: 10px;
+}
+.create-app-btn:hover{
+  color: #03c8a8;
+  background-image: none;
+  background-color: white;
+  cursor: pointer;
+  border: 3px solid #03c8a8;
+}
+.create-app-input {
+  
+  margin-top: 3vh;
+    font-size: medium;
+    text-transform: lowercase;
+  border: 3px solid  #89d8d3;
+  border-radius: 10px;
+  padding-left: 10px;
+  width: 80%;
+  height: 5vh;
+  min-height: 5vh;
+}
+
+.create-app-photo {
+    align-self: center;
+    border-radius: 10px;
+    width: 20%;
+  }
+  .create-app-photo > input[type="file"] {
+    display: none;
+  }
+
+.create-app-photo-container{
+  margin-top: 3vh;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+}
+.create-app-image-preview{
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:#03c8a8
+}
+
+.create-app-city{
+  margin-top: 3vh;
+  width:  80%;
+  padding-left: 10px;
+}
+
+@media screen and (max-width: 1100px)  {
+  .create-app-container{
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .create-app-duoL{
+    margin-bottom: 0;
+    width: 80%;
+    align-items: center;
+  }
+  .create-app-duoR{
+    width: 80%;
+    justify-content: center;
+  }
+  .create-app-image-preview{
+  width: 80%;
+  height: 80%;
+  }
+}

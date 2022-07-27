@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
-
+import { imageToBase64 } from "../../functions/Functions";
 import "../../css/pages/RegisterScreen.css";
 
 function RegisterScreen() {
@@ -65,21 +65,7 @@ function RegisterScreen() {
     }
   };
 
-  const imageToBase64 = (file) => {
-    var reader = new FileReader();
-    return new Promise((resolve, reject) => {
-      reader.onload = () => {
-        var base64String = reader.result
-          .replace("data:", "")
-          .replace(/^.+,/, "");
-        resolve(base64String);
-      };
-      reader.onerror = () => {
-        reject("oops, something went wrong with the file reader.");
-      };
-      reader.readAsDataURL(file);
-    });
-  };
+  
 
   return (
     <div className="register-page">
