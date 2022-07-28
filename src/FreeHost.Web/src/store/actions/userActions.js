@@ -18,12 +18,14 @@ import {
   USER_GET_APARTMENT_FAIL,
   USER_GET_APARTMENT_REQUEST,
   USER_GET_APARTMENT_SUCCESS,
-  
   USER_UPDATE_APARTMENTS_FAIL,
   USER_UPDATE_APARTMENTS_REQUEST,
   USER_UPDATE_APARTMENTS_RESET,
   USER_UPDATE_APARTMENTS_SUCCESS,
 } from "../constants/userConstants";
+
+import { refresh } from "./systemActions";
+
 import axios from "axios";
 
 export const login = (login, password) => async (dispatch) => {
@@ -129,13 +131,22 @@ export const getUserApartments = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-   
+
     const { data } = await axios.get("api/hosting/get", config);
+
     dispatch({
       type: USER_APARTMENTS_SUCCESS,
       payload: data,
     });
   } catch (error) {
+    if (error.response.status == 401) {
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      dispatch(refresh(userInfo.token, userInfo.refreshToken));
+      dispatch(getUserApartments());
+    }
     dispatch({
       type: USER_APARTMENTS_FAIL,
       payload:
@@ -179,10 +190,28 @@ export const createApartment =
         config
       );
 
-      dispatch({  
+      dispatch({
         type: USER_CREATE_APARTMENTS_SUCCESS,
       });
     } catch (error) {
+      if (error.response.status == 401) {
+        const {
+          userLogin: { userInfo },
+        } = getState();
+
+        dispatch(refresh(userInfo.token, userInfo.refreshToken));
+        dispatch(
+          createApartment(
+            name,
+            city,
+            address,
+            amenities,
+            numberOfBeds,
+            photo,
+            distance
+          )
+        );
+      }
       dispatch({
         type: USER_CREATE_APARTMENTS_FAIL,
         payload:
@@ -195,63 +224,12 @@ export const createApartment =
     }
   };
 
-  
 export const updateApartment =
-(id,name, city, address, amenities, numberOfBeds, photo, distance) =>
-async (dispatch, getState) => {
-  try {
-    dispatch({
-      type: USER_UPDATE_APARTMENTS_REQUEST,
-    });
-
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-
-    const { data } = await axios.put(
-      "/api/hosting/edit",
-      {
-        id:id,
-        name: name,
-        city: city,
-        address: address,
-        numberOfBeds: numberOfBeds,
-        amenities: amenities,
-        photos: [photo],
-        distanceFromTheCenter: distance,
-      },
-      config
-    );
-
-    dispatch({  
-      type: USER_UPDATE_APARTMENTS_SUCCESS,
-    });
-  } catch (error) {
-    dispatch({
-      type: USER_UPDATE_APARTMENTS_FAIL,
-      payload:
-        error.response &&
-        error.response.data &&
-        error.response.data[0].description
-          ? error.response.data[0].description
-          : error.message,  
-    });
-  }
-};
-
-
-
-  export const deleteApartment = (id) =>  async (dispatch,getState) => {
+  (id, name, city, address, amenities, numberOfBeds, photo, distance) =>
+  async (dispatch, getState) => {
     try {
       dispatch({
-        type: USER_DELETE_APARTMENTS_REQUEST,
+        type: USER_UPDATE_APARTMENTS_REQUEST,
       });
 
       const {
@@ -265,29 +243,88 @@ async (dispatch, getState) => {
         },
       };
 
-      const { data } = await axios.delete(
-        `/api/hosting/delete/${id}`,
+      const { data } = await axios.put(
+        "/api/hosting/edit",
+        {
+          id: id,
+          name: name,
+          city: city,
+          address: address,
+          numberOfBeds: numberOfBeds,
+          amenities: amenities,
+          photos: [photo],
+          distanceFromTheCenter: distance,
+        },
         config
-        );
-        dispatch({  
-          type: USER_DELETE_APARTMENTS_SUCCESS,
-        });
-      } catch (error) {
-        dispatch({
-          type: USER_DELETE_APARTMENTS_FAIL,
-          payload:
-            error.response &&
-            error.response.data &&
-            error.response.data[0].description
-              ? error.response.data[0].description
-              : error.message,
-        });
-      }
+      );
 
-  }
-
-
+      dispatch({
+        type: USER_UPDATE_APARTMENTS_SUCCESS,
+      });
+    } catch (error) {
+      if (error.response.status == 401) {
+        const {
+          userLogin: { userInfo },
+        } = getState();
   
+        dispatch(refresh(userInfo.token, userInfo.refreshToken));
+        updateApartment(id, name, city, address, amenities, numberOfBeds, photo, distance)
+      }
+      dispatch({
+        type: USER_UPDATE_APARTMENTS_FAIL,
+        payload:
+          error.response &&
+          error.response.data &&
+          error.response.data[0].description
+            ? error.response.data[0].description
+            : error.message,
+      });
+    }
+  };
+
+export const deleteApartment = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_DELETE_APARTMENTS_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.delete(`/api/hosting/delete/${id}`, config);
+    dispatch({
+      type: USER_DELETE_APARTMENTS_SUCCESS,
+    });
+  } catch (error) {
+    if (error.response.status == 401) {
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      dispatch(refresh(userInfo.token, userInfo.refreshToken));
+        dispatch(deleteApartment(id))
+    }
+    
+    dispatch({
+      type: USER_DELETE_APARTMENTS_FAIL,
+      payload:
+        error.response &&
+        error.response.data &&
+        error.response.data[0].description
+          ? error.response.data[0].description
+          : error.message,
+    });
+  }
+};
+
 export const getApartment = (id) => async (dispatch, getState) => {
   try {
     dispatch({
@@ -304,13 +341,21 @@ export const getApartment = (id) => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-   
+
     const { data } = await axios.get(`/api/hosting/get/${id}`, config);
     dispatch({
       type: USER_GET_APARTMENT_SUCCESS,
       payload: data,
     });
   } catch (error) {
+    if (error.response.status == 401) {
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      dispatch(refresh(userInfo.token, userInfo.refreshToken));
+      getApartment(id)
+    }
     dispatch({
       type: USER_GET_APARTMENT_FAIL,
       payload:
