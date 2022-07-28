@@ -5,9 +5,14 @@ import {
   
   SYSTEM_AMENITIES_FAIL,
   SYSTEM_AMENITIES_REQUEST,
-  SYSTEM_AMENITIES_SUCCESS
+  SYSTEM_AMENITIES_SUCCESS,
+
+  SYSTEM_REFRESH_FAIL,
+  SYSTEM_REFRESH_REQUEST,
+  SYSTEM_REFRESH_SUCCESS
 } from "../constants/systemConstants";
 
+import { USER_LOGIN_SUCCESS } from "../constants/userConstants";
 import axios from "axios";
 
 export const getCities = () => async (dispatch, getState) => {
@@ -78,6 +83,45 @@ export const getAmenities = () => async (dispatch, getState) => {
         error.response &&
         error.response.data &&
         error.response.data[0].description
+          ? error.response.data[0].description
+          : error.message,
+    });
+  }
+};
+
+
+export const refresh = (token,refreshToken) => async (dispatch) => {
+  try {
+    dispatch({
+      type: SYSTEM_REFRESH_REQUEST,
+    });
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+
+    const { data } = await axios.post(
+      "/api/authorization/refreshtoken",
+      { accessToken:token,refreshToken:refreshToken },
+     
+    );
+
+    dispatch({
+      type: SYSTEM_REFRESH_REQUEST,
+      payload: data,
+    });
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    });
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: SYSTEM_REFRESH_FAIL,
+      payload:
+        error.response && error.response.data[0].description
           ? error.response.data[0].description
           : error.message,
     });
