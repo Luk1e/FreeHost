@@ -125,7 +125,12 @@ public class AuthorizationService : IAuthorizationService
         _refreshTokenRepo.Update(storedRefreshToken);
 
         var user = await _userManager.FindByIdAsync(validatedToken.Claims.Single(x => x.Type == "userId").Value); // beware of magic claim name
-        return await GenerateAuthenticationResultForUserAsync(user);
+
+        var authResult = await GenerateAuthenticationResultForUserAsync(user);
+        authResult.FirstName = user.FirstName;
+        authResult.LastName = user.LastName;
+
+        return authResult;
     }
 
     private async Task<AuthenticationResult> GenerateAuthenticationResultForUserAsync(User user)

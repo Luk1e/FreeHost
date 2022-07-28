@@ -31,5 +31,6 @@ public class MappingProfile : Profile
         CreateMap<EditPlaceRequest, Place>();
         CreateMap<BookedDate, BookedDatesDto>().ReverseMap();
         CreateMap<Place, PlaceDto>();
+        CreateMap<Place, PlaceSearchDto>().ReverseMap();
     }
 }
