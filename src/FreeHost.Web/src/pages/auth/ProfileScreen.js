@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserApartments } from "../../store/actions/userActions";
-import Message from "../../components/Message";
 import { useNavigate } from "react-router-dom";
 import Apartment from "../../components/Apartment";
 
 import "../../css/pages/ProfileScreen.css";
+
+import Loader from "../../components/Loader";
+import Message from "../../components/Message";
 
 function ProfileScreen() {
   const dispatch = useDispatch();
@@ -47,7 +49,8 @@ function ProfileScreen() {
             CREATE
           </button>
         </div>
-        {Object.keys(apartments).length !== 0 ? 
+
+        {loading ? <Loader/> : error? <Message>{error}</Message> : Object.keys(apartments).length !== 0 ? 
          apartments.map(element => {
            return <Apartment key={element.id} apartment={element} className="profile-apartment"/>
          })

@@ -39,6 +39,14 @@ export const getCities = () => async (dispatch, getState) => {
       payload: data,
     });
   } catch (error) {
+    if (error.response.status == 401) {
+      const {
+        userLogin: { userInfo },
+      } = getState();
+          
+      dispatch(refresh(userInfo.token, userInfo.refreshToken));
+      dispatch(getCities())
+    }
     dispatch({
       type: SYSTEM_CITIES_FAIL,
       payload:
@@ -77,6 +85,14 @@ export const getAmenities = () => async (dispatch, getState) => {
       payload: data,
     });
   } catch (error) {
+    if (error.response.status == 401) {
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      dispatch(refresh(userInfo.token, userInfo.refreshToken));
+      dispatch(getAmenities());
+    }
     dispatch({
       type: SYSTEM_AMENITIES_FAIL,
       payload:
