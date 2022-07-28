@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FreeHost.API.Controllers;
 
-//[Authorize(AuthenticationSchemes = "Bearer")]
+[Authorize(AuthenticationSchemes = "Bearer")]
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]

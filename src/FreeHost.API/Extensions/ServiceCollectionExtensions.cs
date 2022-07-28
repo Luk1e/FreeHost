@@ -3,6 +3,7 @@ using AutoMapper;
 using FreeHost.Domain.Mapper;
 using FreeHost.Domain.Services;
 using FreeHost.Infrastructure.Database;
+using FreeHost.Infrastructure.Database.Repos;
 using FreeHost.Infrastructure.Interfaces.Database;
 using FreeHost.Infrastructure.Interfaces.Repositories;
 using FreeHost.Infrastructure.Interfaces.Services;
@@ -36,6 +37,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserRepo, UserRepo>();
         services.AddScoped<IAmenityPlaceRepo, AmenityPlaceRepo>();
         services.AddScoped<IPhotoRepo, PhotoRepo>();
+        services.AddScoped<IBookedPlaceRepo, BookedPlaceRepo>();
 
         return services;
     }
@@ -45,6 +47,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped<IHostingService, HostingService>();
         services.AddScoped<ISearchService, SearchService>();
+        services.AddScoped<IBookingService, BookingService>();
 
         return services;
     }

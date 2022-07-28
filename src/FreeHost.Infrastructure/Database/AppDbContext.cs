@@ -14,6 +14,7 @@ public class AppDbContext : IdentityDbContext<User>
     public DbSet<BookedDate> BookedDates { get; set; }
     public DbSet<City> Cities { get; set; }
     public DbSet<AmenityPlace> AmenityPlace { get; set; }
+    public DbSet<BookedPlace> BookedPlaces { get; set; }
 
     public AppDbContext(DbContextOptions options) : base(options)
     {
