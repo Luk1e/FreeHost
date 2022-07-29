@@ -41,7 +41,45 @@ public class BookingController : ControllerBase
         {
             var errors = new ErrorResponse
             {
+                Code = nameof(ArgumentException),
+                Description = e.Message
+            };
+            return BadRequest(errors);
+        }
+        catch (Exception e)
+        {
+            var errors = new ErrorResponse
+            {
                 Code = "InternalServerError",
+                Description = e.Message
+            };
+            return BadRequest(errors);
+        }
+    }
+
+    [HttpPut("approve")]
+    public async Task<IActionResult> Approve(int bookingId)
+    {
+        try
+        {
+            var userId = HttpContext.GetUserIdFromJwt();
+            _bookingService.Approve(bookingId, userId);
+            return Ok("You have approved this booking");
+        }
+        catch (ArgumentNullException e)
+        {
+            var errors = new ErrorResponse
+            {
+                Code = "NotFound",
+                Description = e.Message
+            };
+            return NotFound(errors);
+        }
+        catch (ArgumentException e)
+        {
+            var errors = new ErrorResponse
+            {
+                Code = nameof(ArgumentException),
                 Description = e.Message
             };
             return BadRequest(errors);

@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using FreeHost.Infrastructure.Interfaces.Database;
+﻿using FreeHost.Infrastructure.Interfaces.Database;
 using FreeHost.Infrastructure.Interfaces.Services;
 using FreeHost.Infrastructure.Models.Enums;
 using FreeHost.Infrastructure.Models.Hosting;
@@ -22,7 +21,13 @@ public class BookingService : IBookingService
 
     public void Book(BookingRequest request, string userId)
     {
-        var place = _placeRepo.Get(x => x.Id == request.ApartmentId).Single() ?? 
+        if (request.EndDate < request.StartDate)
+            throw new ArgumentException("Check-out date cannot be earlier than check-in");
+
+        if (request.StartDate < DateTime.UtcNow)
+            throw new ArgumentException("Cannot book a date in the past");
+
+        var place = _placeRepo.Get(x => x.Id == request.ApartmentId).SingleOrDefault() ?? 
                     throw new ArgumentNullException(nameof(request.ApartmentId), "Apartment not found");
 
         if (place.User.Id == userId)
@@ -31,7 +36,7 @@ public class BookingService : IBookingService
         if (!place.BookedDates.Any(x => x.StartDate < request.EndDate == x.EndDate < request.StartDate && x.StartDate != request.EndDate)) 
             throw new ArgumentException("Could not book a place for this date range");
 
-        var client = _userRepo.Get(x => x.Id == userId).Single() ??
+        var client = _userRepo.Get(x => x.Id == userId).SingleOrDefault() ??
                      throw new ArgumentNullException(nameof(userId), "Client user not found");
 
         var hasSameBookings = _bookedPlaceRepo
@@ -51,5 +56,61 @@ public class BookingService : IBookingService
         };
 
         _bookedPlaceRepo.Add(bookedPlace);
+    }
+
+    public void Approve(int bookingId, string userId)
+    {
+        var booking = _bookedPlaceRepo.Get(x => x.Id == bookingId).SingleOrDefault() ??
+                      throw new ArgumentNullException(nameof(bookingId), "Booking not found");
+
+        if (booking.BookingStatus == BookingStatusEnum.Accepted)
+            throw new ArgumentException("This booking is already accepted");
+
+        if (booking.Owner.Id != userId)
+            throw new ArgumentException("Only owners can approve bookings for their places");
+
+        var place = _placeRepo.Get(x => x.Id == booking.Place.Id).SingleOrDefault() ??
+                    throw new ArgumentNullException(nameof(bookingId), "Place for this booking is not found");
+
+        if (place.BookedDates.Any(x => x.StartDate < booking.EndDate == x.EndDate < booking.StartDate && x.StartDate != booking.EndDate))
+            throw new ArgumentException("Another booking for this date range is already approved");
+
+        booking.BookingStatus = BookingStatusEnum.Accepted;
+        _bookedPlaceRepo.Update(booking);
+
+        if (!place.BookedDates.Any(x => x.Client == booking.Client && x.EndDate == booking.EndDate && x.StartDate == booking.StartDate))
+        {
+            var newBookedDates = place.BookedDates.ToList();
+            newBookedDates.Add(new BookedDate { Client = booking.Client, EndDate = booking.EndDate, StartDate = booking.StartDate });
+            place.BookedDates = newBookedDates;
+            _placeRepo.Update(place);
+        }
+
+        var rejected = _bookedPlaceRepo.Get(x => x.Place == place)
+            .Where(x => x.StartDate >= booking.EndDate == x.EndDate >= booking.StartDate && x.BookingStatus == BookingStatusEnum.Waiting).ToList();
+        foreach (var bookedPlace in rejected)
+        {
+            bookedPlace.BookingStatus = BookingStatusEnum.Rejected;
+            _bookedPlaceRepo.Update(bookedPlace);
+        }
+
+        // return new list of bookings
+    }
+
+    public void Reject(int bookingId, string userId)
+    {
+        var booking = _bookedPlaceRepo.Get(x => x.Id == bookingId).SingleOrDefault() ??
+                      throw new ArgumentNullException(nameof(bookingId), "Booking not found");
+
+        if (booking.BookingStatus == BookingStatusEnum.Accepted)
+            throw new ArgumentException("This booking is already rejected");
+
+        if (booking.Owner.Id != userId)
+            throw new ArgumentException("Only owners can reject bookings for their places");
+
+        booking.BookingStatus = BookingStatusEnum.Rejected;
+        _bookedPlaceRepo.Update(booking);
+
+        // return new list of bookings
     }
 }
