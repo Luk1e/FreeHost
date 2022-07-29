@@ -28,6 +28,10 @@ function EditApartmentScreen() {
   const [distance, setDistance] = useState("");
 
   const [firstTime, setFirstTime] = useState(true);
+
+  // :D
+  const [reallyFirstTime ,setReallyFirstTime]=useState(true)
+
   const [message, setMessage] = useState("");
   const { id } = useParams();
   //                  GET CITY LIST
@@ -70,7 +74,8 @@ function EditApartmentScreen() {
       navigate("/profile");
     }
 
-    if (!apartment.name) {
+    if (reallyFirstTime) {
+      setReallyFirstTime(!reallyFirstTime)
       dispatch(getApartment(id));
     } else {
       setName(apartment.name);
@@ -156,7 +161,7 @@ function EditApartmentScreen() {
     <div className="create-app-page">
       {apartmentLoading && <Loader />}
       {apartmentError && <Message>{apartmentError}</Message>}
-      <h1 className="create-app-header">Add an apartment</h1>
+      <h1 className="create-app-header">Update an apartment</h1>
       <form onSubmit={submitHandler} className="create-app-container">
         <div className="create-app-duoL">
           {message && <Message>{message}</Message>}
