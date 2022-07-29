@@ -4,6 +4,7 @@ import Search from '../../components/Search'
 import "../../css/pages/SearchScreen.css"
 
 function SearchScreen() {
+  
   return (
     <div className='searchSc-page'>
       <div className='searchSc-container'>

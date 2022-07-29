@@ -28,6 +28,10 @@ function EditApartmentScreen() {
   const [distance, setDistance] = useState("");
 
   const [firstTime, setFirstTime] = useState(true);
+
+  // :D
+  const [reallyFirstTime ,setReallyFirstTime]=useState(true)
+
   const [message, setMessage] = useState("");
   const { id } = useParams();
   //                  GET CITY LIST
@@ -70,7 +74,8 @@ function EditApartmentScreen() {
       navigate("/profile");
     }
 
-    if (!apartment.name) {
+    if (reallyFirstTime) {
+      setReallyFirstTime(!reallyFirstTime)
       dispatch(getApartment(id));
     } else {
       setName(apartment.name);
