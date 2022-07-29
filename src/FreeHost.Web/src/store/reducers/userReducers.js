@@ -19,11 +19,13 @@ import {
   USER_GET_APARTMENT_FAIL,
   USER_GET_APARTMENT_REQUEST,
   USER_GET_APARTMENT_SUCCESS,
+  USER_GET_APARTMENT_RESET,
   USER_UPDATE_APARTMENTS_FAIL,
   USER_UPDATE_APARTMENTS_REQUEST,
   USER_UPDATE_APARTMENTS_RESET,
   USER_UPDATE_APARTMENTS_SUCCESS,
 } from "../constants/userConstants";
+
 
 export const userLoginReducer = (state = {}, action) => {
   switch (action.type) {
@@ -143,6 +145,8 @@ export const userGetApartmentReducer = (state = { apartment: {} }, action) => {
 
     case USER_GET_APARTMENT_FAIL:
       return { loading: false, error: action.payload };
+    case USER_GET_APARTMENT_RESET:
+      return {}
 
     default:
       return state;

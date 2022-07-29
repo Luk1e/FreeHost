@@ -65,8 +65,11 @@ function CreateApartmentScreen() {
 
   //                PHOTO
   const UploadPhoto = (e) => {
+    document.getElementById("create-image").src = URL.createObjectURL(
+      e.target.files[0]
+    );
     setPhoto(e.target.files[0]);
- 
+
   };
 
   //                LIMIT AMENITIES
@@ -205,7 +208,7 @@ function CreateApartmentScreen() {
         </div>
         <div className="create-app-duoR">
           <img
-            id="image"
+            id="create-image"
             className="create-app-image-preview"
             alt="add an image"
           />
