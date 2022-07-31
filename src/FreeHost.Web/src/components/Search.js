@@ -1,6 +1,6 @@
 //       REACT
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useSearchParams } from "react-router-dom";
 
 //       REDUX
 import { useDispatch, useSelector } from "react-redux";
@@ -17,13 +17,25 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 
 function Search() {
-  const [city, setCity] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const cityParam=searchParams.get("city")
+  const startDateParam=searchParams.get("startDate")
+  const endDateParam=searchParams.get("endDate")
+
+  const [city, setCity] = useState(cityParam? cityParam : "");
+  const [startDate, setStartDate] = useState(startDateParam ? startDateParam : "");
+  const [endDate, setEndDate] = useState(endDateParam ? endDateParam : "");
   const [message,setMessage]=useState("")
   const today = new Date().toJSON().slice(0, 10);
 
   const [type, setType] = useState("text");
+
+
+  
+  const numberOfBedsParam=searchParams.get("numberOfBeds");
+  const sortByParam=searchParams.get("sortBy")
+
 
   //                  GET CITY LIST
   const systemCities = useSelector((state) => state.systemCities);
@@ -50,7 +62,7 @@ function Search() {
   const submitHandler = (e) => {
     e.preventDefault();
     if (!message) {
-     navigate(`/search?city=${city}&startDate=${startDate}&endDate=${endDate}`)
+     navigate(`/search?city=${city}&startDate=${startDate}&endDate=${endDate}${sortByParam? "&sortBy="+sortByParam: ""}${numberOfBedsParam? "&numberOfBeds="+numberOfBedsParam: ""}`)
      
     }
    
@@ -82,12 +94,14 @@ function Search() {
       <input
         type={type}
         placeholder="start date"
+        value={startDate}
         onFocus={() => {
           setType("date");
         }}
         onBlur={() => setType("text")}
         className="search-input"
         min={today}
+        max={endDate ? endDate :null}
         onChange={(e) => setStartDate(e.target.value)}
       />
       <input
@@ -96,6 +110,7 @@ function Search() {
         onFocus={() => {
           setType("date");
         }}
+        value={endDate}
         onBlur={() => setType("text")}
         className="search-input"
         min={startDate ? startDate : today}

@@ -1,0 +1,30 @@
+.category-container{
+}
+
+.category-header{
+    color:#03c8a8;
+    margin-bottom: 0;
+}
+.category-inner-container{
+    width: 100%;
+    display: flex;
+}
+.category-input{
+ width: 25%;
+ margin-top: 3vh;
+}
+.category-input:last-of-type{
+    margin-left: 5%;
+}
+
+@media screen and (max-width: 900px) {
+.category-inner-container{
+    flex-direction: column;
+}    
+.category-input{
+    width: 100%;
+}
+.category-input:last-of-type{
+    margin-left: 0;
+}
+}

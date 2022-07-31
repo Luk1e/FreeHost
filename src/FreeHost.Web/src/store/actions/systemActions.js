@@ -9,7 +9,11 @@ import {
 
   SYSTEM_REFRESH_FAIL,
   SYSTEM_REFRESH_REQUEST,
-  SYSTEM_REFRESH_SUCCESS
+  SYSTEM_REFRESH_SUCCESS,
+
+  SYSTEM_APARTMENTS_FAIL,
+  SYSTEM_APARTMENTS_REQUEST,
+  SYSTEM_APARTMENTS_SUCCESS
 } from "../constants/systemConstants";
 
 import { USER_LOGIN_SUCCESS } from "../constants/userConstants";
@@ -143,3 +147,49 @@ export const refresh = (token,refreshToken) => async (dispatch) => {
     });
   }
 };
+
+
+export const getApartments = (city,startDate,endDate,numberOfBeds,sortBy,page) => async (dispatch,getState) => {
+  try {
+    dispatch({
+      type: SYSTEM_APARTMENTS_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/search?city=${city}&startDate=${startDate}&endDate=${endDate}${numberOfBeds ? "&numberOfBeds="+numberOfBeds : ""}${sortBy? "&sortBy="+sortBy:""}${page? "&page="+page :""}`, config);
+
+    dispatch({
+      type: SYSTEM_APARTMENTS_SUCCESS,
+      payload: data,
+    });
+
+  } catch (error) {
+    if (error.response.status == 401) {
+      const {
+        userLogin: { userInfo },
+      } = getState();
+          
+      dispatch(refresh(userInfo.token, userInfo.refreshToken));
+      getApartments(city,startDate,endDate,numberOfBeds,sortBy,page)
+    }
+    dispatch({
+      type: SYSTEM_APARTMENTS_FAIL,
+      payload:
+        error.response &&
+        error.response.data &&
+        error.response.data[0].description
+          ? error.response.data[0].description
+          : error.message,
+    });
+  }
+}
