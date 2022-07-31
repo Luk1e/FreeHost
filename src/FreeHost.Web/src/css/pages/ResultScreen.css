@@ -1,0 +1,29 @@
+.result-page {
+  width: 100vw;
+  display: flex;
+  margin-top: 10vh;
+  justify-content: center;
+}
+.result-container {
+  width: 90%;
+  background-color: white;
+  border-radius: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10vh;
+}
+
+.result-inner-container {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 10vh;
+  margin-top: 10vh;
+}
+
+.result-apartment{
+    margin-top: 10vh;
+}
+
