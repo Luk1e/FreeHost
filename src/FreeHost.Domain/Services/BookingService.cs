@@ -44,7 +44,7 @@ public class BookingService : IBookingService
         if (place.User.Id == userId)
             throw new ArgumentException("Owners cannot book their own apartments");
 
-        if (!place.BookedDates.Any(x => x.StartDate < request.EndDate == x.EndDate < request.StartDate && x.StartDate != request.EndDate)) 
+        if (!place.BookedDates.Any(x => x.StartDate < request.EndDate == x.EndDate < request.StartDate && x.StartDate != request.EndDate) && place.BookedDates.Any()) 
             throw new ArgumentException("Could not book a place for this date range");
 
         var client = _userRepo.Get(x => x.Id == userId).SingleOrDefault() ??
