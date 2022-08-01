@@ -4,25 +4,29 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import {
   userLoginReducer,
   userRegisterReducer,
-  userApartmentsReducer,userCreateApartmentReducer,
+  userApartmentsReducer,
+  userCreateApartmentReducer,
   userDeleteApartmentReducer,
-  userGetApartmentReducer,userUpdateApartmentReducer
+  userGetApartmentReducer,
+  userUpdateApartmentReducer,
 } from "./reducers/userReducers";
 import {
   systemCitiesReducer,
   systemAmenitiesReducer,
+  systemApartmentsReducer,
 } from "./reducers/systemReducers";
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userApartments: userApartmentsReducer,
-  userGetApartment:userGetApartmentReducer,
-  userCreateApartments:userCreateApartmentReducer,
-  userUpdateApartments:userUpdateApartmentReducer,
-  userDeleteApartments:userDeleteApartmentReducer,
+  userGetApartment: userGetApartmentReducer,
+  userCreateApartments: userCreateApartmentReducer,
+  userUpdateApartments: userUpdateApartmentReducer,
+  userDeleteApartments: userDeleteApartmentReducer,
   systemCities: systemCitiesReducer,
   systemAmenities: systemAmenitiesReducer,
+  systemApartments: systemApartmentsReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem("userInfo")

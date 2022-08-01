@@ -51,6 +51,32 @@ justify-content: center;
   cursor: pointer;
   
 }
+.apartment-btn-booking{
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+    width: 15%;
+  min-width:max-content;
+  height: 6vh;
+  min-height: max-content;
+  min-height: 5vh;
+  border-radius: 10px;
+  font-size: large;
+  color: white;
+ border:3px solid white;
+
+  border-radius: 10px;
+  cursor: pointer;
+
+  background-color: lightgreen;
+}
+.apartment-btn-booking:hover{
+    
+    transform: scale(1.05);
+    
+    border-color: lightgreen;
+    color:lightgreen;
+    background-color: white;
+}
 
 .apartment-btn:first-of-type{
 

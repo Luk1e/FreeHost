@@ -4,7 +4,10 @@ import {
     SYSTEM_CITIES_SUCCESS,
     SYSTEM_AMENITIES_FAIL,
     SYSTEM_AMENITIES_REQUEST,
-    SYSTEM_AMENITIES_SUCCESS
+    SYSTEM_AMENITIES_SUCCESS,
+    SYSTEM_APARTMENTS_FAIL,
+    SYSTEM_APARTMENTS_REQUEST,
+    SYSTEM_APARTMENTS_SUCCESS
   } from "../constants/systemConstants";
 
   
@@ -39,3 +42,22 @@ export const systemCitiesReducer = (state = { cities: [] }, action) => {
         return state;
     }
   };
+
+
+  export const systemApartmentsReducer = (state = { apartments: [] }, action) => {
+
+ switch (action.type) {
+      case  SYSTEM_APARTMENTS_REQUEST:
+        return { ...state, loading: true };
+  
+      case  SYSTEM_APARTMENTS_SUCCESS:
+        return { loading: false,apartments: action.payload };
+  
+      case  SYSTEM_APARTMENTS_FAIL:
+        return { loading: false, error: action.payload };
+  
+      default:
+        return state;
+    }
+
+  }

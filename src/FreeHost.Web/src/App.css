@@ -1,6 +1,18 @@
 body {
   background-color: #b0b9c9;
+  overflow-x: hidden;
+
 }
 
 
+
    /* CUSTOM CLASSES */
+
+
+   .margin-top-5vh{
+    margin-top: 5vh;
+   }
+
+   .margin-bottom-5vh{
+    margin-bottom: 5vh;
+   }
