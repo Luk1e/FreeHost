@@ -5,8 +5,8 @@ namespace FreeHost.Infrastructure.Interfaces.Services;
 
 public interface IBookingService
 {
-    /*IEnumerable<BookingResponse> GetBookings(string userId);
-    IEnumerable<BookingResponse> GetGuests(string userId);*/
+    BookingResponse GetBookings(string userId, int page);
+    BookingResponse GetGuests(string userId, int page);
     void Book(BookingRequest request, string userId);
     void Approve(int bookingId, string userId);
     void Reject(int bookingId, string userId);
