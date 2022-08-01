@@ -2,7 +2,7 @@
 using FreeHost.Infrastructure.Interfaces.Repositories;
 using FreeHost.Infrastructure.Models.Hosting;
 
-namespace FreeHost.Infrastructure.Database;
+namespace FreeHost.Infrastructure.Database.Repos;
 
 public class AmenityPlaceRepo : Repository<AmenityPlace>, IAmenityPlaceRepo
 {
