@@ -21,6 +21,7 @@ public class MappingProfile : Profile
         CreateMap<AuthorizationRequest, RegistrationRequest>().ReverseMap();
         CreateMap<IdentityResult, AuthenticationResult>().ConvertUsing<AuthenticationResultIdentityResultConverter>();
         CreateMap<User, UserDto>();
+        CreateMap<User, UserProfileResponse>().ConvertUsing<UserToProfileConverter>();
 
         CreateMap<string, City>().ConvertUsing<StringToCityConverter>();
         CreateMap<City, string>().ConvertUsing<CityToStringConverter>();

@@ -48,6 +48,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IHostingService, HostingService>();
         services.AddScoped<ISearchService, SearchService>();
         services.AddScoped<IBookingService, BookingService>();
+        services.AddScoped<IUserService, UserService>();
 
         return services;
     }
