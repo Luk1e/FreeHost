@@ -1,5 +1,8 @@
-﻿using FreeHost.Infrastructure.Interfaces.Database;
+﻿using AutoMapper;
+using FreeHost.Domain.Utils;
+using FreeHost.Infrastructure.Interfaces.Database;
 using FreeHost.Infrastructure.Interfaces.Services;
+using FreeHost.Infrastructure.Models.DTOs;
 using FreeHost.Infrastructure.Models.Enums;
 using FreeHost.Infrastructure.Models.Hosting;
 using FreeHost.Infrastructure.Models.Requests;
@@ -12,23 +15,35 @@ public class BookingService : IBookingService
     private readonly IUserRepo _userRepo;
     private readonly IPlaceRepo _placeRepo;
     private readonly IBookedPlaceRepo _bookedPlaceRepo;
+    private readonly IMapper _mapper;
 
-    public BookingService(IUserRepo userRepo, IPlaceRepo placeRepo, IBookedPlaceRepo bookedPlaceRepo)
+    public BookingService(IUserRepo userRepo, IPlaceRepo placeRepo, IBookedPlaceRepo bookedPlaceRepo, IMapper mapper)
     {
         _userRepo = userRepo;
         _placeRepo = placeRepo;
         _bookedPlaceRepo = bookedPlaceRepo;
+        _mapper = mapper;
     }
 
-    /*public IEnumerable<BookingResponse> GetBookings(string userId)
+    public BookingResponse GetBookings(string userId, int page)
     {
-        throw new NotImplementedException();
+        var bookedPlaces = _bookedPlaceRepo.Get(x => x.Client.Id == userId).OrderBy(x => x.BookingStatus);
+        var pagination = Paginator.ApplyPagination(bookedPlaces, page);
+        var response = _mapper.Map<BookingResponse>(pagination.Data);
+        response.Bookings = _mapper.Map<IEnumerable<BookingDto>>(bookedPlaces);
+
+        return response;
     }
 
-    public IEnumerable<BookingResponse> GetGuests(string userId)
+    public BookingResponse GetGuests(string userId, int page)
     {
-        return _bookedPlaceRepo.Get(x => x.Owner.Id == userId).OrderBy(x => x.BookingStatus);
-    }*/
+        var guests = _bookedPlaceRepo.Get(x => x.Owner.Id == userId).OrderBy(x => x.BookingStatus);
+        var pagination = Paginator.ApplyPagination(guests, page);
+        var response = _mapper.Map<BookingResponse>(pagination.Data);
+        response.Bookings = _mapper.Map<IEnumerable<BookingDto>>(guests);
+
+        return response;
+    }
 
     public void Book(BookingRequest request, string userId)
     {
@@ -36,7 +51,7 @@ public class BookingService : IBookingService
             throw new ArgumentException("Check-out date cannot be earlier than check-in");
 
         if (request.StartDate < DateTime.UtcNow)
-            throw new ArgumentException("Cannot book a date in the past");
+            throw new ArgumentException("Cannot book a date today or in the past");
 
         var place = _placeRepo.Get(x => x.Id == request.ApartmentId).SingleOrDefault() ?? 
                     throw new ArgumentNullException(nameof(request.ApartmentId), "Apartment not found");
@@ -104,8 +119,6 @@ public class BookingService : IBookingService
             bookedPlace.BookingStatus = BookingStatusEnum.Rejected;
             _bookedPlaceRepo.Update(bookedPlace);
         }
-
-        // return new list of bookings
     }
 
     public void Reject(int bookingId, string userId)
@@ -121,7 +134,5 @@ public class BookingService : IBookingService
 
         booking.BookingStatus = BookingStatusEnum.Rejected;
         _bookedPlaceRepo.Update(booking);
-
-        // return new list of bookings
     }
 }

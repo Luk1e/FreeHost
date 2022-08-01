@@ -19,6 +19,20 @@ public class BookingController : ControllerBase
         _bookingService = bookingService;
     }
 
+    [HttpGet("bookings")]
+    public async Task<IActionResult> GetBookings(int page = 1)
+    {
+        var userId = HttpContext.GetUserIdFromJwt();
+        return Ok(_bookingService.GetBookings(userId, page));
+    }
+
+    [HttpGet("guests")]
+    public async Task<IActionResult> GetGuests(int page = 1)
+    {
+        var userId = HttpContext.GetUserIdFromJwt();
+        return Ok(_bookingService.GetGuests(userId, page));
+    }
+
     [HttpPost("book")]
     public async Task<IActionResult> Book(BookingRequest request)
     {
@@ -58,13 +72,13 @@ public class BookingController : ControllerBase
     }
 
     [HttpPut("approve")]
-    public async Task<IActionResult> Approve(int bookingId)
+    public async Task<IActionResult> Approve(int bookingId, int page = 1)
     {
         try
         {
             var userId = HttpContext.GetUserIdFromJwt();
             _bookingService.Approve(bookingId, userId);
-            return Ok("You have approved this booking");
+            return Ok(_bookingService.GetGuests(userId, page));
         }
         catch (ArgumentNullException e)
         {
@@ -96,13 +110,13 @@ public class BookingController : ControllerBase
     }
 
     [HttpPut("reject")]
-    public async Task<IActionResult> Reject(int bookingId)
+    public async Task<IActionResult> Reject(int bookingId, int page = 1)
     {
         try
         {
             var userId = HttpContext.GetUserIdFromJwt();
             _bookingService.Reject(bookingId, userId);
-            return Ok("You have rejected this booking");
+            return Ok(_bookingService.GetGuests(userId, page));
         }
         catch (ArgumentNullException e)
         {

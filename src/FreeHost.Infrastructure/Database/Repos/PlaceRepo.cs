@@ -5,7 +5,7 @@ using FreeHost.Infrastructure.Models.Authorization;
 using FreeHost.Infrastructure.Models.Hosting;
 using Microsoft.EntityFrameworkCore;
 
-namespace FreeHost.Infrastructure.Database;
+namespace FreeHost.Infrastructure.Database.Repos;
 
 public class PlaceRepo : Repository<Place>, IPlaceRepo
 {

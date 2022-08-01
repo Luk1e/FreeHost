@@ -17,7 +17,7 @@ public class BookedPlaceRepo : Repository<BookedPlace>, IBookedPlaceRepo
     {
         return base.Get(expression)
             .Include(x => x.Owner)
-            .Include(x => x.Place)
+            .Include(x => x.Place).ThenInclude(x => x.City)
             .Include(x => x.Client);
     }
 }
