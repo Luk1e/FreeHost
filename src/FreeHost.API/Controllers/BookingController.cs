@@ -94,4 +94,42 @@ public class BookingController : ControllerBase
             return BadRequest(errors);
         }
     }
+
+    [HttpPut("reject")]
+    public async Task<IActionResult> Reject(int bookingId)
+    {
+        try
+        {
+            var userId = HttpContext.GetUserIdFromJwt();
+            _bookingService.Reject(bookingId, userId);
+            return Ok("You have rejected this booking");
+        }
+        catch (ArgumentNullException e)
+        {
+            var errors = new ErrorResponse
+            {
+                Code = "NotFound",
+                Description = e.Message
+            };
+            return NotFound(errors);
+        }
+        catch (ArgumentException e)
+        {
+            var errors = new ErrorResponse
+            {
+                Code = nameof(ArgumentException),
+                Description = e.Message
+            };
+            return BadRequest(errors);
+        }
+        catch (Exception e)
+        {
+            var errors = new ErrorResponse
+            {
+                Code = "InternalServerError",
+                Description = e.Message
+            };
+            return BadRequest(errors);
+        }
+    }
 }

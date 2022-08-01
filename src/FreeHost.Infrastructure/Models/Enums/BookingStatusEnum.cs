@@ -3,6 +3,6 @@
 public enum BookingStatusEnum
 {
     Waiting = 0,
-    Rejected = 1,
-    Accepted = 2
+    Accepted = 1,
+    Rejected = 2
 }

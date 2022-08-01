@@ -3,6 +3,7 @@ using FreeHost.Infrastructure.Interfaces.Services;
 using FreeHost.Infrastructure.Models.Enums;
 using FreeHost.Infrastructure.Models.Hosting;
 using FreeHost.Infrastructure.Models.Requests;
+using FreeHost.Infrastructure.Models.Responses;
 
 namespace FreeHost.Domain.Services;
 
@@ -18,6 +19,16 @@ public class BookingService : IBookingService
         _placeRepo = placeRepo;
         _bookedPlaceRepo = bookedPlaceRepo;
     }
+
+    /*public IEnumerable<BookingResponse> GetBookings(string userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<BookingResponse> GetGuests(string userId)
+    {
+        return _bookedPlaceRepo.Get(x => x.Owner.Id == userId).OrderBy(x => x.BookingStatus);
+    }*/
 
     public void Book(BookingRequest request, string userId)
     {
