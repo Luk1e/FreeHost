@@ -10,11 +10,22 @@ public class BookedPlaceBookingResponseConverter : ITypeConverter<IEnumerable<Bo
     {
         return source.Select(bookedPlace => new BookingDto
             {
-                ApartmentId = bookedPlace.Id,
-                Address = bookedPlace.Place.Address,
-                City = bookedPlace.Place.City.Name,
-                Name = bookedPlace.Place.Name,
-                User = new UserDto {FirstName = bookedPlace.Client.FirstName, LastName = bookedPlace.Client.LastName}
+                Apartment = new BookingPlaceDto
+                {
+                    ApartmentId = bookedPlace.Id,
+                    Address = bookedPlace.Place.Address,
+                    City = bookedPlace.Place.City.Name,
+                    Name = bookedPlace.Place.Name,
+                    StartDate = bookedPlace.StartDate,
+                    EndDate = bookedPlace.EndDate,
+                    Photos = bookedPlace.Place.Photos.Select(x => System.Convert.ToBase64String(x.Bytes))
+                },
+                User = new BookingUserDto
+                {
+                    FirstName = bookedPlace.Client.FirstName, 
+                    LastName = bookedPlace.Client.LastName, 
+                    Photo = System.Convert.ToBase64String(bookedPlace.Client.Photo)
+                }
             });
     }
 }
