@@ -29,7 +29,7 @@ public class BookingService : IBookingService
     {
         var bookedPlaces = _bookedPlaceRepo.Get(x => x.Client.Id == userId).OrderBy(x => x.BookingStatus);
         var pagination = Paginator.ApplyPagination(bookedPlaces, page);
-        var response = _mapper.Map<BookingResponse>(pagination.Data);
+        var response = _mapper.Map<BookingResponse>(pagination);
         response.Bookings = _mapper.Map<IEnumerable<BookingDto>>(bookedPlaces);
 
         return response;
@@ -39,7 +39,7 @@ public class BookingService : IBookingService
     {
         var guests = _bookedPlaceRepo.Get(x => x.Owner.Id == userId).OrderBy(x => x.BookingStatus);
         var pagination = Paginator.ApplyPagination(guests, page);
-        var response = _mapper.Map<BookingResponse>(pagination.Data);
+        var response = _mapper.Map<BookingResponse>(pagination);
         response.Bookings = _mapper.Map<IEnumerable<BookingDto>>(guests);
 
         return response;
