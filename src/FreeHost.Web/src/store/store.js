@@ -9,6 +9,7 @@ import {
   userDeleteApartmentReducer,
   userGetApartmentReducer,
   userUpdateApartmentReducer,
+  userBookReducer
 } from "./reducers/userReducers";
 import {
   systemCitiesReducer,
@@ -24,6 +25,7 @@ const reducer = combineReducers({
   userCreateApartments: userCreateApartmentReducer,
   userUpdateApartments: userUpdateApartmentReducer,
   userDeleteApartments: userDeleteApartmentReducer,
+  userBook:userBookReducer,
   systemCities: systemCitiesReducer,
   systemAmenities: systemAmenitiesReducer,
   systemApartments: systemApartmentsReducer,

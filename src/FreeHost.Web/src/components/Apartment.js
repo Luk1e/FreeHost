@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 //       REDUX
-import { deleteApartment } from "../store/actions/userActions";
+import { deleteApartment, book } from "../store/actions/userActions";
 import { useSelector, useDispatch } from "react-redux";
 
 //       OTHER
@@ -21,8 +21,8 @@ function Apartment(props) {
   const userDeleteApartments = useSelector(
     (state) => state.userDeleteApartments
   );
-  const { loading, error, success } = userDeleteApartments;
 
+  
   //                   Delete apartment
   const DeleteHandler = () => {
     if (window.confirm("Are you sure you want to delete this apartment?")) {
@@ -30,9 +30,12 @@ function Apartment(props) {
       setDisplay(!display);
     }
   };
+  const BookHandler = (id) => {
+    if (window.confirm("Are you sure you want to book this apartment?")) {
+      dispatch(book(id, props.startDate, props.endDate));
+    }
+  };
 
-  //                    USE EFFECT
-  useEffect(() => {}, [navigate, dispatch]);
   return (
     <div
       className="apartment-container"
@@ -69,7 +72,7 @@ function Apartment(props) {
               <b>distance from center:</b>{" "}
               {props.apartment.distanceFromTheCenter}{" "}
             </div>
-            {props.apartment.bookedDates.length!==0 && (
+            {props.apartment.bookedDates.length !== 0 && (
               <div className="apartment-inline">
                 <b>booked dates</b>
                 {props.apartment.bookedDates.map(
@@ -91,6 +94,9 @@ function Apartment(props) {
               props.apartment.available
                 ? "apartment-btn-booking"
                 : "apartment-btn margin-top-5vh  margin-bottom-5vh"
+            }
+            onClick={() =>
+              props.apartment.available && BookHandler(props.apartment.id)
             }
           >
             {props.apartment.available ? "Book now" : "not available"}
