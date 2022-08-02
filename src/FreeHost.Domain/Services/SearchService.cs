@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FreeHost.Domain.Utils;
 using FreeHost.Infrastructure.Interfaces.Database;
 using FreeHost.Infrastructure.Interfaces.Services;
 using FreeHost.Infrastructure.Models.DTOs;
@@ -10,8 +11,6 @@ namespace FreeHost.Domain.Services;
 
 public class SearchService : ISearchService
 {
-    private const int PageLimit = 10;
-
     private readonly IPlaceRepo _placeRepo;
     private readonly IMapper _mapper;
 
@@ -33,9 +32,9 @@ public class SearchService : ISearchService
 
         places = ApplySorting(places, request.SortBy);
 
-        var result = ApplyPagination(places, request.Page);
+        var paginated = Paginator.ApplyPagination(places, request.Page);
 
-        return result;
+        return _mapper.Map<SearchResponse>(paginated);
     }
 
     private static List<PlaceSearchDto> ApplyFiltering(IEnumerable<PlaceSearchDto> places, string City, NumberOfBedsEnum numberOfBeds)
@@ -79,23 +78,5 @@ public class SearchService : ISearchService
         places = places.OrderByDescending(x => x.Available);
 
         return places.ToList();
-    }
-
-    private static SearchResponse ApplyPagination(IEnumerable<PlaceSearchDto> places, int currentPage)
-    {
-        var apartments = places.ToList();
-
-        if (currentPage < 1)
-            currentPage = 1;
-        var maxPage = (int)Math.Ceiling(apartments.Count / (double)PageLimit);
-        if (currentPage > maxPage)
-            currentPage = maxPage;
-
-        var skippedItems = PageLimit * currentPage - PageLimit;
-        apartments = apartments.Skip(skippedItems).Take(PageLimit).ToList();
-
-        var result = new SearchResponse { Apartments = apartments, CurrentPage = currentPage, MaxPage = maxPage };
-
-        return result;
     }
 }
