@@ -1,0 +1,27 @@
+.guests-container{
+ background-color: red;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.guests-inner-container{
+
+    margin-top: 10vh;
+    width: 100%;
+    background-color: #deebdd;
+    background-image: linear-gradient(315deg, #deebdd 0%, #bbdbbe 74%);
+    border-radius: 100px;
+    display: flex;
+    height: 30vh;
+    justify-content: space-between;
+  
+}
+
+.guests-img{
+    border-radius: 100px;
+}
+.guests-duo{
+        
+}

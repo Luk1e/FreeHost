@@ -216,7 +216,7 @@ export const getGuests = (page) => async (dispatch, getState) => {
       },
     };
   
-    const { data } = await axios.get("/api/Booking/guests",{page : page ? page : 1} ,config);
+    const { data } = await axios.get(`/api/Booking/guests${ page ? "?page="+page : ""}`,config);
 
     dispatch({
       type: SYSTEM_MY_GUESTS_SUCCESS,

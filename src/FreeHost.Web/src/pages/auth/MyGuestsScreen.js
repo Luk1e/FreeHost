@@ -1,10 +1,14 @@
-import React, { useEffect } from "react";
+import React,{useEffect} from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { getGuests } from "../../store/actions/systemActions";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import Pagination from "../../components/Pagination";
+import Guests from "../../components/Guests";
+import Message from "../../components/Message";
+import Loader from "../../components/Loader";
+import GuestsPagination from "../../components/GuestsPagination";
+
 import "../../css/pages/MyGuestsScreen.css";
 
 function MyGuestsScreen() {
@@ -17,7 +21,10 @@ function MyGuestsScreen() {
   const systemGuests = useSelector((state) => state.systemGuests);
   const { error, loading, guests } = systemGuests;
 
-  useEffect(() => {}, [page, dispatch, navigate]);
+  useEffect(() => {
+    dispatch(getGuests(page));
+    console.log(guests)
+  }, [page, dispatch, navigate]);
 
   return (
     <div className="result-page">
@@ -25,7 +32,30 @@ function MyGuestsScreen() {
         <div className="result-inner-container">
           <h1 className="myGuests-header">My Guests</h1>
           <div className="result-apartment"></div>
-          <Pagination page={1} maxPage={3} />
+          {loading ? (
+              <Loader />
+            ) : error ? (
+              <Message>{error}</Message>
+            ) : guests &&
+              Object.keys(guests).length !== 0 &&
+              guests.bookings.length !== 0 ? (
+              guests.bookings.map((element,index) => {
+                return (
+                  <Guests
+                    key={index}
+                    apartment={element.apartment}
+                     user={element.user}
+                     name={element.name}
+
+
+                  />
+                );
+              })
+            ) : (
+              <Message>NO APARTMENTS</Message>
+            )}
+             {guests &&     <GuestsPagination page={guests.page} maxPage={guests.maxPage} />}
+
         </div>
       </div>
     </div>
