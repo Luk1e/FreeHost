@@ -56,7 +56,6 @@ function ResultScreen() {
     <div className="result-page">
       <div className="result-container">
         <div className="result-inner-container">
-          {/* <button onClick={()=>{console.log(page,apartments)}}>dd</button> */}
           <Search />
           <Category />
           <div className="result-apartment">

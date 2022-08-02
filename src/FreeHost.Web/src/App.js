@@ -7,6 +7,7 @@ import SearchScreen from "./pages/auth/SearchScreen";
 import CreateApartmentScreen from "./pages/auth/CreateApartmentScreen";
 import EditApartmentScreen from "./pages/auth/EditApartmentScreen"
 import ResultScreen from "./pages/auth/ResultScreen";
+import MyGuestsScreen from "./pages/auth/MyGuestsScreen";
 
 import AuthorizedLayout from "./layouts/AuthorizedLayout";
 import HomeLayout from "./layouts/HomeLayout";
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/apartments/create" element={<CreateApartmentScreen />} />
           <Route path="/apartments/:id/edit" element={<EditApartmentScreen/>}/>
           <Route path="/search" element={<ResultScreen/>}/>
+          <Route path="/myguests" element={<MyGuestsScreen/>} />
         </Route>
       </Routes>
     </Router>

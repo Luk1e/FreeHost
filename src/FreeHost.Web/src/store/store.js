@@ -15,6 +15,7 @@ import {
   systemCitiesReducer,
   systemAmenitiesReducer,
   systemApartmentsReducer,
+  systemGuestsReducer
 } from "./reducers/systemReducers";
 
 const reducer = combineReducers({
@@ -29,6 +30,7 @@ const reducer = combineReducers({
   systemCities: systemCitiesReducer,
   systemAmenities: systemAmenitiesReducer,
   systemApartments: systemApartmentsReducer,
+  systemGuests:systemGuestsReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem("userInfo")
