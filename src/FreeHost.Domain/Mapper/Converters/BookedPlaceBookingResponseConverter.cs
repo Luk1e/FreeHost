@@ -18,7 +18,8 @@ public class BookedPlaceBookingResponseConverter : ITypeConverter<IEnumerable<Bo
                     Name = bookedPlace.Place.Name,
                     StartDate = bookedPlace.StartDate,
                     EndDate = bookedPlace.EndDate,
-                    Photos = bookedPlace.Place.Photos.Select(x => System.Convert.ToBase64String(x.Bytes))
+                    Photos = bookedPlace.Place.Photos.Select(x => System.Convert.ToBase64String(x.Bytes)),
+                    Status = bookedPlace.BookingStatus
                 },
                 User = new BookingUserDto
                 {
