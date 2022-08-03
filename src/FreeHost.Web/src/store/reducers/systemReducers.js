@@ -83,7 +83,6 @@ export const systemGuestsReducer = (state = { guests: [] }, action) => {
 
     case SYSTEM_BOOKING_APPROVE_FAIL:
       return { loading: false, error: action.payload };
-
     default:
       return state;
   }

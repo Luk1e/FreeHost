@@ -15,7 +15,8 @@ import {
   systemCitiesReducer,
   systemAmenitiesReducer,
   systemApartmentsReducer,
-  systemGuestsReducer
+  systemGuestsReducer,
+  systemBookingApproveReducer
 } from "./reducers/systemReducers";
 
 const reducer = combineReducers({
