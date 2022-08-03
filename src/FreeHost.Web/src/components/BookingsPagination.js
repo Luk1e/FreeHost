@@ -5,8 +5,7 @@ import Stack from "@mui/material/Stack";
 
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-
-export default function GuestsPagination(props) {
+export default function BookingsPagination(props) {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get("page");
@@ -18,9 +17,7 @@ export default function GuestsPagination(props) {
           <Pagination
             count={props.maxPage}
             onChange={(event, value) => {
-              navigate(
-                `/myguests?page=${value}`
-              );
+              navigate(`/mybookings?page=${value}`);
             }}
             page={Number(page ? page : 1)}
             color="primary"

@@ -44,7 +44,8 @@ function MyGuestsScreen() {
                   <Guests
                     key={index}
                     apartment={element.apartment}
-                     user={element.user}                      />
+                     user={element.user}       
+                                    />
                 );
               })
             ) : (

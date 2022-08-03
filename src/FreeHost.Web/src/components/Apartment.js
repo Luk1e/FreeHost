@@ -76,7 +76,9 @@ function Apartment(props) {
               <div className="apartment-inline">
                 <b>booked dates</b>
                 {props.apartment.bookedDates.map(
-                  (date) => date.startDate + "-" + date.endDate
+                  (date) =>  date.startDate.substring(0, 10).replace(/-/g, ".") +
+                  "  - " +
+                  date.endDate.substring(0, 10).replace(/-/g, ".")
                 )}
               </div>
             )}

@@ -14,6 +14,12 @@ import {
   SYSTEM_BOOKING_APPROVE_FAIL,
   SYSTEM_BOOKING_APPROVE_REQUEST,
   SYSTEM_BOOKING_APPROVE_SUCCESS,
+  SYSTEM_BOOKING_REJECT_FAIL,
+  SYSTEM_BOOKING_REJECT_REQUEST,
+  SYSTEM_BOOKING_REJECT_SUCCESS,
+  SYSTEM_MY_BOOKINGS_FAIL,
+  SYSTEM_MY_BOOKINGS_REQUEST,
+  SYSTEM_MY_BOOKINGS_SUCCESS
 } from "../constants/systemConstants";
 
 export const systemCitiesReducer = (state = { cities: [] }, action) => {
@@ -82,6 +88,31 @@ export const systemGuestsReducer = (state = { guests: [] }, action) => {
       return { loading: false, guests: action.payload };
 
     case SYSTEM_BOOKING_APPROVE_FAIL:
+      return { loading: false, error: action.payload };
+
+    case SYSTEM_BOOKING_REJECT_REQUEST:
+      return { ...state, loading: true };
+
+    case SYSTEM_BOOKING_REJECT_SUCCESS:
+      return { loading: false, guests: action.payload };
+
+    case SYSTEM_BOOKING_REJECT_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+
+export const systemBookingsReducer = (state = { bookings: [] }, action) => {
+  switch (action.type) {
+    case SYSTEM_MY_BOOKINGS_REQUEST:
+      return { ...state, loading: true };
+
+    case SYSTEM_MY_BOOKINGS_SUCCESS:
+      return { loading: false, bookings: action.payload };
+
+    case SYSTEM_MY_BOOKINGS_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;

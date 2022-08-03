@@ -17,6 +17,12 @@ import {
   SYSTEM_BOOKING_APPROVE_FAIL,
   SYSTEM_BOOKING_APPROVE_REQUEST,
   SYSTEM_BOOKING_APPROVE_SUCCESS,
+  SYSTEM_BOOKING_REJECT_FAIL,
+  SYSTEM_BOOKING_REJECT_REQUEST,
+  SYSTEM_BOOKING_REJECT_SUCCESS,
+  SYSTEM_MY_BOOKINGS_FAIL,
+  SYSTEM_MY_BOOKINGS_REQUEST,
+  SYSTEM_MY_BOOKINGS_SUCCESS
 } from "../constants/systemConstants";
 
 import { USER_LOGIN_SUCCESS } from "../constants/userConstants";
@@ -283,6 +289,8 @@ export const bookingApprove =
           userLogin: { userInfo },
         } = getState();
 
+        dispatch(refresh(userInfo.token, userInfo.refreshToken));
+        dispatch(bookingApprove(bookingId,page));
       }
       dispatch({
         type: SYSTEM_BOOKING_APPROVE_FAIL,
@@ -294,3 +302,108 @@ export const bookingApprove =
       });
     }
   };
+
+
+
+  
+export const bookingReject =
+(bookingId, page) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: SYSTEM_BOOKING_REJECT_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/booking/reject?bookingId=${bookingId}${
+        page ? "&page=" + page : ""
+      }`,
+      {
+          nothing:"nothing"
+      },
+      config
+    );
+
+    dispatch({
+      type: SYSTEM_BOOKING_REJECT_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    if (error.response.status == 401) {
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      dispatch(refresh(userInfo.token, userInfo.refreshToken));
+      dispatch(bookingReject(bookingId,page));
+    }
+    dispatch({
+      type: SYSTEM_BOOKING_REJECT_FAIL,
+      payload:
+        error.description &&
+        error.response.description ?
+           error.response.description
+          : error.message,
+    });
+  }
+};
+
+
+
+
+export const getBookings = (page) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: SYSTEM_MY_BOOKINGS_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(
+      `/api/Booking/bookings${page ? "?page=" + page : ""}`,
+      config
+    );
+
+    dispatch({
+      type: SYSTEM_MY_BOOKINGS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    if (error.response.status == 401) {
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      dispatch(refresh(userInfo.token, userInfo.refreshToken));
+      dispatch(getBookings(page));
+    }
+    dispatch({
+      type: SYSTEM_MY_BOOKINGS_FAIL,
+      payload:
+        error.response &&
+        error.response.data &&
+        error.response.data.description
+          ? error.response.data.description
+          : error.message,
+    });
+  }
+};

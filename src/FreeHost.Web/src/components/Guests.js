@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { bookingApprove } from "../store/actions/systemActions";
+import { bookingApprove,bookingReject } from "../store/actions/systemActions";
 import { useSearchParams } from "react-router-dom";
 
 import ".././css/components/Guests.css";
@@ -12,8 +12,15 @@ function Guests(props) {
 
   const BookingAccept = (id) => {
     const page = searchParams.get("page");
-    dispatch(bookingApprove(id, page));
+    dispatch(bookingReject(id, page));
   };
+
+  
+  const BookingReject = (id) => {
+    const page = searchParams.get("page");
+    dispatch(bookingReject(id, page));
+  };
+
 
   return (
     <div className="guests-container">
@@ -40,15 +47,19 @@ function Guests(props) {
                 "  - " +
                 props.apartment.endDate.substring(0, 10).replace(/-/g, ".")}
             </h3>
-            <div className="guests-duo-hor">
-              <button
-                className="guests-btn"
-                onClick={() => BookingAccept(props.apartment.apartmentId)}
-              >
-                Accept
-              </button>
-              <button className="guests-btn">Reject</button>
-            </div>
+            {props.apartment.status == 0 ? (
+              <div className="guests-duo-hor">
+                <button
+                  className="guests-btn"
+                  onClick={() => BookingAccept(props.apartment.apartmentId)}
+                >
+                  Accept
+                </button>
+                <button className="guests-btn"    onClick={() => BookingReject(props.apartment.apartmentId)}>Reject</button>
+              </div>
+            ) : (
+              <h3 className="guests-status" style={{color: props.apartment.status===1? "green" : "red"}}>{props.apartment.status == 1 ? "Accepted" : "Rejected"}</h3>
+            )}
           </div>
         </div>
       </div>
