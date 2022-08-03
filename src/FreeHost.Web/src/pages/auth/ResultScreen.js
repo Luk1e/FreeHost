@@ -7,6 +7,7 @@ import Pagination from "../../components/Pagination";
 import { useDispatch, useSelector } from "react-redux";
 import { getApartments } from "../../store/actions/systemActions";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { USER_BOOK_RESET } from "../../store/constants/userConstants";
 
 import Apartment from "../../components/Apartment";
 import "../../css/pages/ResultScreen.css";
@@ -28,17 +29,33 @@ function ResultScreen() {
 
   const systemApartments = useSelector((state) => state.systemApartments);
   const { error, loading, apartments } = systemApartments;
+  const userBook = useSelector((state) => state.userBook);
+  const { error: errorBook, success: successBook } = userBook;
 
   useEffect(() => {
     dispatch(
       getApartments(city, startDate, endDate, numberOfBeds, sortBy, page)
     );
-  }, [city, startDate, endDate, sortBy, numberOfBeds, page, dispatch]);
+
+    if (successBook || errorBook) {
+         const message =successBook ? "Booking request has been sent to the owner." : errorBook;
+      alert(message);
+        dispatch({type:USER_BOOK_RESET})
+    }
+  }, [errorBook,
+    successBook,
+    city,
+    startDate,
+    endDate,
+    sortBy,
+    numberOfBeds,
+    page,
+    dispatch,
+  ]);
   return (
     <div className="result-page">
       <div className="result-container">
         <div className="result-inner-container">
-          {/* <button onClick={()=>{console.log(page,apartments)}}>dd</button> */}
           <Search />
           <Category />
           <div className="result-apartment">
@@ -55,6 +72,8 @@ function ResultScreen() {
                     key={element.id}
                     apartment={element}
                     booking={true}
+                    startDate={startDate}
+                    endDate={endDate}
                   />
                 );
               })

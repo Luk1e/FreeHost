@@ -22,6 +22,9 @@ import {
   USER_UPDATE_APARTMENTS_REQUEST,
   USER_UPDATE_APARTMENTS_RESET,
   USER_UPDATE_APARTMENTS_SUCCESS,
+  USER_BOOK_FAIL,
+  USER_BOOK_REQUEST,
+  USER_BOOK_SUCCESS,
 } from "../constants/userConstants";
 
 import { refresh } from "./systemActions";
@@ -365,3 +368,60 @@ export const getApartment = (id) => async (dispatch, getState) => {
     });
   }
 };
+
+
+
+
+export const book =
+  (apartmentId,startDate,endDate) => async (dispatch, getState) => {
+    try {
+
+      dispatch({
+        type: USER_BOOK_REQUEST,
+      });
+
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.post(
+        "/api/Booking/book",
+        {
+            apartmentId:apartmentId,
+            startDate:startDate,
+            endDate:endDate
+        },
+        config
+      );
+
+      dispatch({
+        type: USER_BOOK_SUCCESS,
+      });
+    } catch (error) {
+      if (error.status == 401) {
+        const {
+          userLogin: { userInfo },
+        } = getState();
+  
+        dispatch(refresh(userInfo.token, userInfo.refreshToken));
+        book(apartmentId,startDate,endDate)
+      }
+      dispatch({
+        type: USER_BOOK_FAIL,
+        payload:
+        error.response && error.response.data.description
+            ? error.response.data.description
+            : error.response,
+      });
+    }
+  };
+
+
+
+  

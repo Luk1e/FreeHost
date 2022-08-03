@@ -1,0 +1,30 @@
+.back-container {
+  position: fixed;
+  margin-left: 1vw;
+  margin-top: -2vh;
+
+}
+
+
+.back-inner-container{
+    width: 7vh;
+    height: 7vh;
+    color:white;
+    background-color: blue;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+}
+.back-inner-container:hover{
+    transform: scale(1.1);
+}
+
+@media  screen and (max-width:1200px) {
+ .back-container{
+    margin-top: -4vh;
+ }
+}
+    

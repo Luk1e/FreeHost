@@ -3,6 +3,7 @@ import { useNavigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import Header from "../components/Header";
+import Back from "../components/Back";
 
 function AuthorizedLayout() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ function AuthorizedLayout() {
     <>
       {userInfo && (
         <>
+          <Back />
           <Header />
           <Outlet />
         </>

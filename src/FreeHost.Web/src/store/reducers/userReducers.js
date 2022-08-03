@@ -24,8 +24,11 @@ import {
   USER_UPDATE_APARTMENTS_REQUEST,
   USER_UPDATE_APARTMENTS_RESET,
   USER_UPDATE_APARTMENTS_SUCCESS,
+  USER_BOOK_FAIL,
+  USER_BOOK_REQUEST,
+  USER_BOOK_SUCCESS,
+  USER_BOOK_RESET,
 } from "../constants/userConstants";
-
 
 export const userLoginReducer = (state = {}, action) => {
   switch (action.type) {
@@ -146,9 +149,29 @@ export const userGetApartmentReducer = (state = { apartment: {} }, action) => {
     case USER_GET_APARTMENT_FAIL:
       return { loading: false, error: action.payload };
     case USER_GET_APARTMENT_RESET:
-      return {}
+      return {};
 
     default:
       return state;
   }
 };
+
+export const userBookReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_BOOK_REQUEST:
+      return { ...state, loading: true };
+
+    case USER_BOOK_SUCCESS:
+      return { loading: false, success: true };
+
+    case USER_BOOK_FAIL:
+      return { loading: false, error: action.payload };
+    case USER_BOOK_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+
+

@@ -9,11 +9,15 @@ import {
   userDeleteApartmentReducer,
   userGetApartmentReducer,
   userUpdateApartmentReducer,
+  userBookReducer
 } from "./reducers/userReducers";
 import {
   systemCitiesReducer,
   systemAmenitiesReducer,
   systemApartmentsReducer,
+  systemGuestsReducer,
+  systemBookingsReducer,
+  systemBookingApproveReducer
 } from "./reducers/systemReducers";
 
 const reducer = combineReducers({
@@ -24,9 +28,12 @@ const reducer = combineReducers({
   userCreateApartments: userCreateApartmentReducer,
   userUpdateApartments: userUpdateApartmentReducer,
   userDeleteApartments: userDeleteApartmentReducer,
+  userBook:userBookReducer,
   systemCities: systemCitiesReducer,
   systemAmenities: systemAmenitiesReducer,
   systemApartments: systemApartmentsReducer,
+  systemGuests:systemGuestsReducer,
+  systemBookings:systemBookingsReducer
 });
 
 const userInfoFromStorage = localStorage.getItem("userInfo")

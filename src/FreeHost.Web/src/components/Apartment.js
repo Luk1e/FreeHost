@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 //       REDUX
-import { deleteApartment } from "../store/actions/userActions";
+import { deleteApartment, book } from "../store/actions/userActions";
 import { useSelector, useDispatch } from "react-redux";
 
 //       OTHER
@@ -21,7 +21,6 @@ function Apartment(props) {
   const userDeleteApartments = useSelector(
     (state) => state.userDeleteApartments
   );
-  const { loading, error, success } = userDeleteApartments;
 
   //                   Delete apartment
   const DeleteHandler = () => {
@@ -30,86 +29,93 @@ function Apartment(props) {
       setDisplay(!display);
     }
   };
+  const BookHandler = (id) => {
+    if (window.confirm("Are you sure you want to book this apartment?")) {
+      dispatch(book(id, props.startDate, props.endDate));
+    }
+  };
 
-  //                    USE EFFECT
-  useEffect(() => {}, [navigate, dispatch]);
   return (
-    <div
-      className="apartment-container"
-      style={{ display: display ? "flex" : "none" }}
-    >
-      <div className="apartment-inner-container">
-        <div className="apartment-name">{props.apartment.name} </div>
-
-        <div className="apartment-duo">
-          <div className="apartment-duoL">
-            <div className="apartment-inline">
-              <b>city:</b> {props.apartment.city}
-            </div>
-            <div className="apartment-inline">
-              <b>address:</b> {props.apartment.address}
-            </div>
-            <div className="apartment-inline">
-              <b>number of beds:</b> {props.apartment.numberOfBeds}
-            </div>
-            <div className="apartment-inline">
-              <b>amenities: </b>
-              {props.apartment.amenities.length == 0
-                ? "none"
-                : props.apartment.amenities.map((element) =>
-                    element !=
-                    props.apartment.amenities[
-                      props.apartment.amenities.length - 1
-                    ]
-                      ? element + ", "
-                      : element
-                  )}
-            </div>
-            <div className="apartment-inline">
-              <b>distance from center:</b>{" "}
-              {props.apartment.distanceFromTheCenter}{" "}
-            </div>
-            {props.apartment.bookedDates.length!==0 && (
-              <div className="apartment-inline">
-                <b>booked dates</b>
-                {props.apartment.bookedDates.map(
-                  (date) => date.startDate + "-" + date.endDate
-                )}
-              </div>
-            )}
-          </div>
-          <div className="apartment-duoR">
+    <div className="apartmentsPro-container">
+      <div className="apartmentsPro-inner-container">
+        <div className="apartmentsPro-duo-hor">
+          <div className="apartmentsPro-duo">
             <img
+              className="apartmentsPro-img"
               src={"data:image/png;base64," + props.apartment.photos[0]}
-              className="apartment-img"
             />
           </div>
-        </div>
-        {props.booking ? (
-          <button
-            className={
-              props.apartment.available
-                ? "apartment-btn-booking"
-                : "apartment-btn margin-top-5vh  margin-bottom-5vh"
-            }
-          >
-            {props.apartment.available ? "Book now" : "not available"}
-          </button>
-        ) : (
-          <div className="apartment-btn-container">
-            <button
-              className="apartment-btn"
-              onClick={() => {
-                navigate(`/apartments/${props.apartment.id}/edit`);
-              }}
-            >
-              edit
-            </button>
-            <button className="apartment-btn" onClick={() => DeleteHandler()}>
-              delete
-            </button>
+
+          <div className="apartmentsPro-description">
+            <h1 className="apartmentsPro-name apartment-name">{props.apartment.name}</h1>
+            <div>
+              <h3>
+                <b>location: </b>
+                {props.apartment.city + ", " + props.apartment.address}
+              </h3>
+              <h3>
+                <b>distance from center: </b>
+                {props.apartment.distanceFromTheCenter}
+              </h3>
+              <h3>
+                <b>amenities: </b>
+                {props.apartment.amenities.length == 0
+                  ? "none"
+                  : props.apartment.amenities.map((element, index) =>
+                      index == props.apartment.amenities.length - 1
+                        ? element
+                        : element + ", "
+                    )}
+              </h3>
+              {props.apartment.bookedDates.length !== 0 && (
+                <h3>
+                  <b>booking dates: </b>
+                  <ul>
+                    {props.apartment.bookedDates.map((element, index) => (
+                      <li key={index}>
+                        {element.startDate.substring(0, 10).replace(/-/g, ".") +
+                          "  - " +
+                          element.endDate.substring(0, 10).replace(/-/g, ".")}
+                      </li>
+                    ))}
+                  </ul>
+                </h3>
+              )}
+              {props.booking ? props.apartment.available ? (
+                <div className="apartment-btn-container">
+                  <button
+                    className="apartment-btn-booking apartment-btn"
+                    
+                    onClick={() =>
+                      props.apartment.available &&
+                      BookHandler(props.apartment.id)
+                    }
+                  >
+                   Book now 
+                  </button>
+                </div>
+              ) :  <h2  className="apartment-status-unavailable">not available</h2>
+               : (
+                <div className="apartment-btn-container">
+                  <button
+                    className="apartment-btn-edit apartment-btn"
+                    onClick={() => {
+                      navigate(`/apartments/${props.apartment.id}/edit`);
+                    }}
+                  >
+                    edit
+                  </button>
+                  <button
+                    className="apartment-btn-delete apartment-btn"
+                    onClick={() => DeleteHandler()}
+                  >
+                    delete
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

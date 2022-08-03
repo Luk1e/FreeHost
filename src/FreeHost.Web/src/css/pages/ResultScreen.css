@@ -27,3 +27,10 @@
     margin-top: 10vh;
 }
 
+@media screen and (max-width: 900px) {
+
+  .result-apartment{
+    margin-top: 0;
+}
+
+}
