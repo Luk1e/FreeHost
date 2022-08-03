@@ -21,12 +21,13 @@
 }
 .apartmentsPro-duo {
   width: 40%;
-  height: 60vh;
+  height: 100%;
 }
 .apartmentsPro-img {
   width: 100%;
   border-radius: 100px;
-  height: 100%;
+  min-height: 100%;
+     height: 60vh;
 }
 
 .apartmentsPro-description {
@@ -40,6 +41,7 @@
   display: flex;
 }
 .apartmentsPro-name {
+  color:red;
   font-weight: bold;
   margin-top: 5vh;
   font-size: xx-large;
