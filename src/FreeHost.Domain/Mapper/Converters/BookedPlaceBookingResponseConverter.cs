@@ -19,7 +19,8 @@ public class BookedPlaceBookingResponseConverter : ITypeConverter<IEnumerable<Bo
                     StartDate = bookedPlace.StartDate,
                     EndDate = bookedPlace.EndDate,
                     Photos = bookedPlace.Place.Photos.Select(x => System.Convert.ToBase64String(x.Bytes)),
-                    Status = bookedPlace.BookingStatus
+                    Status = bookedPlace.BookingStatus,
+                    Distance = bookedPlace.Place.DistanceFromTheCenter
                 },
                 User = new BookingUserDto
                 {
