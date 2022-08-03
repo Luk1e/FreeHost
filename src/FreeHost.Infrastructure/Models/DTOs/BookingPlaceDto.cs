@@ -12,4 +12,5 @@ public class BookingPlaceDto
     public DateTime EndDate { get; set; }
     public IEnumerable<string> Photos { get; set; }
     public BookingStatusEnum Status { get; set; }
+    public int Distance { get; set; }
 }
