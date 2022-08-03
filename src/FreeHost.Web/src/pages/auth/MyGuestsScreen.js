@@ -38,17 +38,13 @@ function MyGuestsScreen() {
               <Message>{error}</Message>
             ) : guests &&
               Object.keys(guests).length !== 0 &&
-              guests.bookings.length !== 0 ? (
-              guests.bookings.map((element,index) => {
+              guests.data.length !== 0 ? (
+              guests.data.map((element,index) => {
                 return (
                   <Guests
                     key={index}
                     apartment={element.apartment}
-                     user={element.user}
-                     name={element.name}
-
-
-                  />
+                     user={element.user}                      />
                 );
               })
             ) : (

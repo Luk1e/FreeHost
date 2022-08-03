@@ -17,7 +17,12 @@ import {
 
   SYSTEM_MY_GUESTS_FAIL,
   SYSTEM_MY_GUESTS_REQUEST,
-  SYSTEM_MY_GUESTS_SUCCESS
+  SYSTEM_MY_GUESTS_SUCCESS,
+
+  
+  SYSTEM_BOOKING_APPROVE_FAIL,
+  SYSTEM_BOOKING_APPROVE_REQUEST,
+  SYSTEM_BOOKING_APPROVE_SUCCESS
 } from "../constants/systemConstants";
 
 import { USER_LOGIN_SUCCESS } from "../constants/userConstants";
@@ -233,6 +238,55 @@ export const getGuests = (page) => async (dispatch, getState) => {
     }
     dispatch({
       type: SYSTEM_MY_GUESTS_FAIL,
+      payload:
+        error.response &&
+        error.response.data &&
+        error.response.data[0].description
+          ? error.response.data[0].description
+          : error.message,
+    });
+  }
+};
+
+  
+export const bookingApprove =
+(bookingId,page) =>
+async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: SYSTEM_BOOKING_APPROVE_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/booking/approve?bookingId=${bookingId}${page ? "&page=" + page : ""}`,
+      config
+    );
+
+    dispatch({
+      type: SYSTEM_BOOKING_APPROVE_SUCCESS,
+    });
+  } catch (error) {
+    if (error.response.status == 401) {
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      dispatch(refresh(userInfo.token, userInfo.refreshToken));
+      bookingApprove(bookingId,page)
+    }
+    dispatch({
+      type: SYSTEM_BOOKING_APPROVE_FAIL,
       payload:
         error.response &&
         error.response.data &&
