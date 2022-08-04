@@ -12,7 +12,7 @@ public class BookedPlaceBookingResponseConverter : ITypeConverter<IEnumerable<Bo
             {
                 Apartment = new BookingPlaceDto
                 {
-                    ApartmentId = bookedPlace.Id,
+                    BookingId = bookedPlace.Id,
                     Address = bookedPlace.Place.Address,
                     City = bookedPlace.Place.City.Name,
                     Name = bookedPlace.Place.Name,
