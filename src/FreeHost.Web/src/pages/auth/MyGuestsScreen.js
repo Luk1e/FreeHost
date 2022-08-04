@@ -49,7 +49,7 @@ function MyGuestsScreen() {
                 );
               })
             ) : (
-              <Message>NO APARTMENTS</Message>
+              <Message>NO  GUESTS</Message>
             )}
              {guests &&     <GuestsPagination page={guests.page} maxPage={guests.maxPage} />}
 

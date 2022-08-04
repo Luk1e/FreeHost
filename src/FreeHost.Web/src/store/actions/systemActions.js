@@ -22,7 +22,10 @@ import {
   SYSTEM_BOOKING_REJECT_SUCCESS,
   SYSTEM_MY_BOOKINGS_FAIL,
   SYSTEM_MY_BOOKINGS_REQUEST,
-  SYSTEM_MY_BOOKINGS_SUCCESS
+  SYSTEM_MY_BOOKINGS_SUCCESS,
+  SYSTEM_GET_USER_FAIL,
+  SYSTEM_GET_USER_REQUEST,
+  SYSTEM_GET_USER_SUCCESS,
 } from "../constants/systemConstants";
 
 import { USER_LOGIN_SUCCESS } from "../constants/userConstants";
@@ -274,7 +277,7 @@ export const bookingApprove =
           page ? "&page=" + page : ""
         }`,
         {
-            nothing:"nothing"
+          nothing: "nothing",
         },
         config
       );
@@ -290,76 +293,68 @@ export const bookingApprove =
         } = getState();
 
         dispatch(refresh(userInfo.token, userInfo.refreshToken));
-        dispatch(bookingApprove(bookingId,page));
+        dispatch(bookingApprove(bookingId, page));
       }
       dispatch({
         type: SYSTEM_BOOKING_APPROVE_FAIL,
         payload:
-          error.description &&
-          error.response.description ?
-             error.response.description
+          error.description && error.response.description
+            ? error.response.description
             : error.message,
       });
     }
   };
 
-
-
-  
 export const bookingReject =
-(bookingId, page) => async (dispatch, getState) => {
-  try {
-    dispatch({
-      type: SYSTEM_BOOKING_REJECT_REQUEST,
-    });
+  (bookingId, page) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: SYSTEM_BOOKING_REJECT_REQUEST,
+      });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-
-    const { data } = await axios.put(
-      `/api/booking/reject?bookingId=${bookingId}${
-        page ? "&page=" + page : ""
-      }`,
-      {
-          nothing:"nothing"
-      },
-      config
-    );
-
-    dispatch({
-      type: SYSTEM_BOOKING_REJECT_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    if (error.response.status == 401) {
       const {
         userLogin: { userInfo },
       } = getState();
 
-      dispatch(refresh(userInfo.token, userInfo.refreshToken));
-      dispatch(bookingReject(bookingId,page));
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.put(
+        `/api/booking/reject?bookingId=${bookingId}${
+          page ? "&page=" + page : ""
+        }`,
+        {
+          nothing: "nothing",
+        },
+        config
+      );
+
+      dispatch({
+        type: SYSTEM_BOOKING_REJECT_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      if (error.response.status == 401) {
+        const {
+          userLogin: { userInfo },
+        } = getState();
+
+        dispatch(refresh(userInfo.token, userInfo.refreshToken));
+        dispatch(bookingReject(bookingId, page));
+      }
+      dispatch({
+        type: SYSTEM_BOOKING_REJECT_FAIL,
+        payload:
+          error.description && error.response.description
+            ? error.response.description
+            : error.message,
+      });
     }
-    dispatch({
-      type: SYSTEM_BOOKING_REJECT_FAIL,
-      payload:
-        error.description &&
-        error.response.description ?
-           error.response.description
-          : error.message,
-    });
-  }
-};
-
-
-
+  };
 
 export const getBookings = (page) => async (dispatch, getState) => {
   try {
@@ -399,11 +394,60 @@ export const getBookings = (page) => async (dispatch, getState) => {
     dispatch({
       type: SYSTEM_MY_BOOKINGS_FAIL,
       payload:
-        error.response &&
-        error.response.data &&
-        error.response.data.description
+        error.response && error.response.data && error.response.data.description
           ? error.response.data.description
           : error.message,
     });
   }
 };
+
+
+
+export const getUser=
+  () =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: SYSTEM_GET_USER_REQUEST,
+      });
+
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.get(
+       "api/User/get",
+        config
+      );
+
+      dispatch({
+        type: SYSTEM_GET_USER_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      if (error.response.status == 401) {
+        const {
+          userLogin: { userInfo },
+        } = getState();
+
+        dispatch(refresh(userInfo.token, userInfo.refreshToken));
+        getUser();
+      }
+      dispatch({
+        type: SYSTEM_GET_USER_FAIL,
+        payload:
+          error.response &&
+          error.response.data &&
+          error.response.data[0].description
+            ? error.response.data[0].description
+            : error.message,
+      });
+    }
+  };

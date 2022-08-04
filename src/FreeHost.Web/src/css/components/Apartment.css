@@ -1,39 +1,48 @@
-.apartment-status-unavailable{
-    text-align: center;
-        text-decoration: underline;
-        color:red;
+.apartment-status-unavailable {
+  text-align: center;
+  text-decoration: underline;
+  color: red;
 }
-.apartment-btn-container{
-    display: flex;
-    justify-content: center;
-    margin-top: 10vh;
-    margin-bottom: 10vh;
+.apartment-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10vh;
+  margin-bottom: 10vh;
 }
-.apartment-btn-booking{
-    background-color: green;
+.apartment-btn-booking {
+  background-color: green;
 }
-.apartment-btn-edit{
-    background-color: green;
+.apartment-btn-edit {
+  background-color: green;
 }
-.apartment-btn-delete{
-    background-color: red;
-    margin-left: 10px;
+.apartment-btn-delete {
+  background-color: red;
+  margin-left: 10px;
 }
-.apartment-btn{
-    text-transform: uppercase;
-    height: 7vh;
-    width: 50%;
-    border:2px solid white;
-    border-radius: 100px;
-    color:white;
-    cursor: pointer;
+.profile-apartments-list{
+
+  background-color: white;
+  border-radius: 10px;
 }
-.apartment-btn:hover{
-        transform: scale(1.1);
+.apartment-btn {
+  text-transform: uppercase;
+  height: 7vh;
+  width: 10vw;
+  border-radius: 100px;
+  color: white;
+  cursor: pointer;
+  font-size: large;
+  border:none;
+}
+.apartment-btn:hover {
+  transform: scale(1.1);
 }
 
 @media screen and (max-width: 900px) {
-    .apartment-name{
-        margin-top: 13vh !important;
-    }
+  .apartment-name {
+    margin-top: 13vh !important;
+  }
+  .apartment-btn{
+    width: 30vw;
+  }
 }

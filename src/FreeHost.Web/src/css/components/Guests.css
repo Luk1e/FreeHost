@@ -7,9 +7,8 @@
 
 .guests-inner-container {
   margin-top: 10vh;
-  width: 100%;
-  background-color: #deebdd;
-  background-image: linear-gradient(315deg, #deebdd 0%, #bbdbbe 74%);
+  width: 100%;background-color: #d4418e;
+  background-image: linear-gradient(315deg, #d4418e 0%, #0652c5 74%);
   border-radius: 100px;
   display: flex;
   min-height: max-content;
@@ -19,7 +18,7 @@
   margin-right: auto;
   border-radius: 100px;
   width: 30%;
-  height: 50vh;
+  min-height: 50vh;
 }
 .guests-duo {
   display: flex;
@@ -36,6 +35,9 @@
   margin-top: 0;
 }
 
+h3{
+  font-weight: 400;
+}
 .guests-apartment-name {
   color:Red;
   font-weight: bold;
@@ -53,42 +55,34 @@
 }
 
 .guests-btn {
-  width: 30%;
-  text-transform: capitalize;
+  width: 40%;
+  text-transform: uppercase;
   min-width: max-content;
-  height: 6vh;
+  height: 7vh;
   min-height: max-content;
   min-height: 5vh;
-  border-radius: 10px;
+  border-radius: 100px;
   font-size: large;
   color: white;
-  border: 3px solid white;
-
-  border-radius: 10px;
+border: none;
   cursor: pointer;
+  
 }
 
 .guests-btn:first-of-type {
-  background-color: lightgreen;
+  background-color: green;
 }
 
 .guests-btn:first-of-type:hover {
   transform: scale(1.05);
-
-  border-color: lightgreen;
-  color: lightgreen;
-  background-color: white;
 }
 .guests-btn:last-of-type {
   margin-left: 5%;
-  background-color: lightcoral;
+  background-color: red;
 }
 
 .guests-btn:last-of-type:hover {
   transform: scale(1.05);
-  border-color: lightcoral;
-  color: lightcoral;
-  background-color: white;
 }
 
 .guests-status {
@@ -101,6 +95,9 @@
   .guests-inner-container {
     flex-direction: column;
     align-items: center;
+  }
+  .guests-btn{
+    width: 30%;
   }
 
   .guests-img {

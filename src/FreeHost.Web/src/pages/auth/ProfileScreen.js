@@ -8,6 +8,7 @@ import "../../css/pages/ProfileScreen.css";
 
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
+import { getUser } from "../../store/actions/systemActions";
 
 function ProfileScreen() {
   const dispatch = useDispatch();
@@ -16,9 +17,13 @@ function ProfileScreen() {
   const userApartments = useSelector((state) => state.userApartments);
   const { error, loading, apartments } = userApartments;
 
+  const systemUser= useSelector((state)=> state.systemUser);
+  const {error:errorUser,loading:loadingUser, user} = systemUser;
+
   useEffect(() => {
     dispatch(getUserApartments());
-
+    dispatch(getUser())
+    console.group(user)
   }, [dispatch]);
 
   return (
@@ -27,16 +32,17 @@ function ProfileScreen() {
 
       <div className="profile-container">
         <div className="profile-duo">
-          <div className="profile-img">
+          <div className="profile-img-container">
             <img
-              src="https://dl.memuplay.com/new_market/img/com.vicman.newprofilepic.icon.2022-06-07-21-33-07.png"
-              alt="Girl in a jacket"
-              width="100%"
-              height="100%"
+            className="profile-img"
+              src={"data:image/png;base64," +user.photo}
             />
           </div>
 
-          <div className="profile-inputs">ddd</div>
+          <div className="profile-name">
+            <h1 >{user.firstName+" " + user.lastName}</h1>
+            <h3><b>E-mail: </b>{user.email}</h3>
+          </div>
         </div>
       </div>
       <div className="profile-apartments-container">
@@ -49,14 +55,26 @@ function ProfileScreen() {
             CREATE
           </button>
         </div>
-
-        {loading ? <Loader/> : error? <Message>{error}</Message> : Object.keys(apartments).length !== 0 ? 
-         apartments.map(element => {
-           return <Apartment key={element.id} apartment={element} className="profile-apartment"/>
-         })
-         : (
-          <Message>NO APARTMENTS</Message>
-        )}
+       
+          {loading ? (
+            <Loader />
+          ) : error ? (
+            <Message>{error}</Message>
+          ) : Object.keys(apartments).length !== 0 ? (
+            <div className="profile-apartments-list">{
+            apartments.map((element) => {
+              return (
+                <Apartment
+                  key={element.id}
+                  apartment={element}
+                  className="profile-apartment"
+                  profileScreen
+                />
+              );
+            })}</div>
+          ) : (
+            <Message>NO APARTMENTS</Message>
+          )}
       </div>
     </div>
   );

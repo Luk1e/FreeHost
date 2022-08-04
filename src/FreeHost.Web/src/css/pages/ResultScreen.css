@@ -23,14 +23,12 @@
   margin-top: 10vh;
 }
 
-.result-apartment{
-    margin-top: 10vh;
+.result-apartment {
+  margin-top: 10vh;
 }
 
 @media screen and (max-width: 900px) {
-
-  .result-apartment{
+  .result-apartment {
     margin-top: 0;
-}
-
+  }
 }

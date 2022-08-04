@@ -36,7 +36,7 @@ function Apartment(props) {
   };
 
   return (
-    <div className="apartmentsPro-container">
+    <div  style={{display : display ? "flex" : "none"}}  className={`apartmentsPro-container ${props.profileScreen? "width-90" : ""}`}>
       <div className="apartmentsPro-inner-container">
         <div className="apartmentsPro-duo-hor">
           <div className="apartmentsPro-duo">
@@ -55,7 +55,7 @@ function Apartment(props) {
               </h3>
               <h3>
                 <b>distance from center: </b>
-                {props.apartment.distanceFromTheCenter}
+                {props.apartment.distanceFromTheCenter} km
               </h3>
               <h3>
                 <b>amenities: </b>
@@ -69,7 +69,7 @@ function Apartment(props) {
               </h3>
               {props.apartment.bookedDates.length !== 0 && (
                 <h3>
-                  <b>booking dates: </b>
+                  <b>booked dates: </b>
                   <ul>
                     {props.apartment.bookedDates.map((element, index) => (
                       <li key={index}>

@@ -17,7 +17,8 @@ import {
   systemApartmentsReducer,
   systemGuestsReducer,
   systemBookingsReducer,
-  systemBookingApproveReducer
+  systemBookingApproveReducer,
+  systemUserReducer
 } from "./reducers/systemReducers";
 
 const reducer = combineReducers({
@@ -33,7 +34,8 @@ const reducer = combineReducers({
   systemAmenities: systemAmenitiesReducer,
   systemApartments: systemApartmentsReducer,
   systemGuests:systemGuestsReducer,
-  systemBookings:systemBookingsReducer
+  systemBookings:systemBookingsReducer,
+  systemUser:systemUserReducer
 });
 
 const userInfoFromStorage = localStorage.getItem("userInfo")

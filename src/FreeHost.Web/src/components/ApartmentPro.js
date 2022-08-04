@@ -26,10 +26,10 @@ function ApartmentPro(props) {
               </h3>
               <h3>
                 <b>distance from center: </b>
-                {props.apartment.distance}
+                {props.apartment.distance} km
               </h3>
               <h3>
-                <b>booking dates: </b>
+                <b>booked dates: </b>
                 {props.apartment.startDate.substring(0, 10).replace(/-/g, ".") +
                   "  - " +
                   props.apartment.endDate.substring(0, 10).replace(/-/g, ".")}

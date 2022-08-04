@@ -74,7 +74,6 @@ function RegisterScreen() {
           <h1 className="register-header">Register</h1>
           {loading ? <Loader /> : error ? <Message>{error}</Message> : <></>}
           {message && <Message>{message}</Message>}
-          <div className="register-duo-box">
             <input
               type="text"
               name="firstName"
@@ -95,9 +94,7 @@ function RegisterScreen() {
               onChange={(e) => setLastName(e.target.value)}
               required
             />
-          </div>
 
-          <div className="register-duo-box"></div>
           <input
             type="email"
             name="email"
@@ -129,7 +126,6 @@ function RegisterScreen() {
             <i className="fa fa-cloud-upload"></i> Photo{" "}
           </label>
 
-          <div className="register-duo-box">
             <input
               type="password"
               name="password"
@@ -149,7 +145,6 @@ function RegisterScreen() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
-          </div>
 
           <div className="register-btn-container">
             <button className="register-btn" onClick={() => LoginNavigator()}>

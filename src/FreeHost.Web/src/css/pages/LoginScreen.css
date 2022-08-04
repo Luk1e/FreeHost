@@ -10,8 +10,7 @@
   display: flex;
   flex-direction: column;
   width: 70%;
-  background-color: #deebdd;
-  background-image: linear-gradient(315deg, #deebdd 0%, #bbdbbe 74%);
+  background-color:indigo;
   border-radius: 100px;
   display: flex;
   justify-content: center;
@@ -26,57 +25,56 @@
 }
 .login-input {
   width: 98%;
-  height: 7vh;
+  height: 6vh;
   margin-top: 5%;
-  border: 3px solid  #89d8d3;;
-  border-radius: 10px;
-  padding-left: 10px;
-  font-size: x-large;
+  border: 3px solid  blue;
+  border-radius: 100px;
+  padding-left: 3%;
+  font-size: large;
+  font-weight: bold;
 }
 .login-header {
-  color: #03c8a8;
+  color: blue;
+  text-transform: uppercase;
   font-size: 3rem;
-  margin-top: 10%;
 }
 .login-btn-container {
   margin-top: 5%;
   display: flex;
   width: 100%;
-  height: 8vh;
-  margin-bottom: 20%;
+  height: 7vh;
+  margin-bottom: 10%;
 }
 .login-btn {
+  text-transform: uppercase;
   width: 30%;
   height: 100%;
-  border-radius: 10px;
-  font-size: xx-large;
+  border-radius: 100px;
+  font-size: large;
   border: none;
+  font-weight: bold;
 }
 .login-btn:first-of-type {
   color: white;
-  background-color: #89d8d3;
-  background-image: linear-gradient(315deg, #89d8d3 0%, #03c8a8 74%);
-  border-radius: 10px;
+  background-color: blue;
 }
 .login-btn:first-of-type:hover {
-  color: #03c8a8;
+  color:blue;
   background-image: none;
   background-color: white;
   cursor: pointer;
-  border: 3px solid #03c8a8;
+  border: 3px solid blue;
 }
 .login-btn:last-of-type {
   margin-left: auto;
-  color: #03c8a8;
+  color: blue;
   background-image: none;
   background-color: white;
-  border: 3px solid #03c8a8;
+  border: 3px solid blue;
 }
 .login-btn:last-of-type:hover {
   color: white;
-  background-color: #89d8d3;
-  background-image: linear-gradient(315deg, #89d8d3 0%, #03c8a8 74%);
-  border-radius: 10px;
+  background-color: blue;
   cursor: pointer;
 }
 
@@ -84,11 +82,24 @@
   .login-container{
     width: 90%;
   }
+
+  .login-header{
+    font-size: xx-large;
+  }
+  .login-inner-container{
+    width: 80%;
+  }
   .login-input{
-    font-size: large;
+    font-size: medium;
   }
   .login-btn {
-    width: 20vw;
-    font-size: large;
+    width: 30vw;
+    font-size: medium;
+  }
+  .login-btn:last-of-type{
+    margin-left: auto;
+  }
+  .login-btn-container{
+    margin-bottom: 10vh;
   }
 }
