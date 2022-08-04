@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { getGuests } from "../../store/actions/systemActions";
@@ -23,7 +23,6 @@ function MyGuestsScreen() {
 
   useEffect(() => {
     dispatch(getGuests(page));
-    console.log(guests)
   }, [page, dispatch, navigate]);
 
   return (
@@ -33,26 +32,27 @@ function MyGuestsScreen() {
           <h1 className="myGuests-header">My Guests</h1>
           <div className="result-apartment"></div>
           {loading ? (
-              <Loader />
-            ) : error ? (
-              <Message>{error}</Message>
-            ) : guests &&
-              Object.keys(guests).length !== 0 &&
-              guests.data.length !== 0 ? (
-              guests.data.map((element,index) => {
-                return (
-                  <Guests
-                    key={index}
-                    apartment={element.apartment}
-                     user={element.user}       
-                                    />
-                );
-              })
-            ) : (
-              <Message>NO  GUESTS</Message>
-            )}
-             {guests &&     <GuestsPagination page={guests.page} maxPage={guests.maxPage} />}
-
+            <Loader />
+          ) : error ? (
+            <Message>{error}</Message>
+          ) : guests &&
+            Object.keys(guests).length !== 0 &&
+            guests.data.length !== 0 ? (
+            guests.data.map((element, index) => {
+              return (
+                <Guests
+                  key={index}
+                  apartment={element.apartment}
+                  user={element.user}
+                />
+              );
+            })
+          ) : (
+            <Message>NO GUESTS</Message>
+          )}
+          {guests && (
+            <GuestsPagination page={guests.page} maxPage={guests.maxPage} />
+          )}
         </div>
       </div>
     </div>

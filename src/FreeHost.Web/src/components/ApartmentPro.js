@@ -30,6 +30,7 @@ function ApartmentPro(props) {
               </h3>
               <h3>
                 <b>booked dates: </b>
+            
                 {props.apartment.startDate.substring(0, 10).replace(/-/g, ".") +
                   "  - " +
                   props.apartment.endDate.substring(0, 10).replace(/-/g, ".")}

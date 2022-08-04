@@ -17,13 +17,12 @@ function ProfileScreen() {
   const userApartments = useSelector((state) => state.userApartments);
   const { error, loading, apartments } = userApartments;
 
-  const systemUser= useSelector((state)=> state.systemUser);
-  const {error:errorUser,loading:loadingUser, user} = systemUser;
+  const systemUser = useSelector((state) => state.systemUser);
+  const { error: errorUser, loading: loadingUser, user } = systemUser;
 
   useEffect(() => {
     dispatch(getUserApartments());
-    dispatch(getUser())
-    console.group(user)
+    dispatch(getUser());
   }, [dispatch]);
 
   return (
@@ -34,14 +33,17 @@ function ProfileScreen() {
         <div className="profile-duo">
           <div className="profile-img-container">
             <img
-            className="profile-img"
-              src={"data:image/png;base64," +user.photo}
+              className="profile-img"
+              src={"data:image/png;base64," + user.photo}
             />
           </div>
 
           <div className="profile-name">
-            <h1 >{user.firstName+" " + user.lastName}</h1>
-            <h3><b>E-mail: </b>{user.email}</h3>
+            <h1>{user.firstName + " " + user.lastName}</h1>
+            <h3>
+              <b>E-mail: </b>
+              {user.email}
+            </h3>
           </div>
         </div>
       </div>
@@ -55,14 +57,14 @@ function ProfileScreen() {
             CREATE
           </button>
         </div>
-       
-          {loading ? (
-            <Loader />
-          ) : error ? (
-            <Message>{error}</Message>
-          ) : Object.keys(apartments).length !== 0 ? (
-            <div className="profile-apartments-list">{
-            apartments.map((element) => {
+
+        {loading ? (
+          <Loader />
+        ) : error ? (
+          <Message>{error}</Message>
+        ) : Object.keys(apartments).length !== 0 ? (
+          <div className="profile-apartments-list">
+            {apartments.map((element) => {
               return (
                 <Apartment
                   key={element.id}
@@ -71,10 +73,11 @@ function ProfileScreen() {
                   profileScreen
                 />
               );
-            })}</div>
-          ) : (
-            <Message>NO APARTMENTS</Message>
-          )}
+            })}
+          </div>
+        ) : (
+          <Message>NO APARTMENTS</Message>
+        )}
       </div>
     </div>
   );

@@ -19,8 +19,7 @@
   background-color: red;
   margin-left: 10px;
 }
-.profile-apartments-list{
-
+.profile-apartments-list {
   background-color: white;
   border-radius: 10px;
 }
@@ -32,7 +31,11 @@
   color: white;
   cursor: pointer;
   font-size: large;
-  border:none;
+  border: none;
+}
+.booking-dates {
+  cursor: pointer;
+  text-decoration: underline;
 }
 .apartment-btn:hover {
   transform: scale(1.1);
@@ -42,7 +45,7 @@
   .apartment-name {
     margin-top: 13vh !important;
   }
-  .apartment-btn{
+  .apartment-btn {
     width: 30vw;
   }
 }

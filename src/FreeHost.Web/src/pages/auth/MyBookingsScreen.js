@@ -23,7 +23,6 @@ function MyBookingsScreen() {
 
   useEffect(() => {
     dispatch(getBookings(page));
-    console.log(bookings);
   }, [page, dispatch, navigate]);
   return (
     <div className="result-page">

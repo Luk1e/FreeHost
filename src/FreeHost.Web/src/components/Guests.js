@@ -54,13 +54,13 @@ function Guests(props) {
               <div className="guests-duo-hor">
                 <button
                   className="guests-btn"
-                  onClick={() => BookingAccept(props.apartment.apartmentId)}
+                  onClick={() => BookingAccept(props.apartment.bookingId)}
                 >
                   Accept
                 </button>
                 <button
                   className="guests-btn"
-                  onClick={() => BookingReject(props.apartment.apartmentId)}
+                  onClick={() => BookingReject(props.apartment.bookingId)}
                 >
                   Reject
                 </button>
