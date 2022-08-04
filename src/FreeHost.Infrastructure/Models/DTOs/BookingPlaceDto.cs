@@ -4,7 +4,7 @@ namespace FreeHost.Infrastructure.Models.DTOs;
 
 public class BookingPlaceDto
 {
-    public int ApartmentId { get; set; }
+    public int BookingId { get; set; }
     public string Name { get; set; }
     public string City { get; set; }
     public string Address { get; set; }

@@ -17,6 +17,7 @@ public class AddPlaceRequest
     public int? NumberOfBeds { get; set; }
 
     [Required]
+    [MaxLength(5)]
     public IEnumerable<string> Amenities { get; set; }
 
     [Required]
