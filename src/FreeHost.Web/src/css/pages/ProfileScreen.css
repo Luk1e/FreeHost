@@ -7,8 +7,7 @@
 .profile-container {
   margin-top: 10vh;
   width: 80%;
-  background-color: #deebdd;
-  background-image: linear-gradient(315deg, #deebdd 0%, #bbdbbe 74%);
+  background-color: white;
   border-radius: 100px;
   display: flex;
   flex-direction: column;
@@ -17,43 +16,66 @@
 }
 .profile-header {
   text-transform: uppercase;
-  color: #03c8a8;
+  color: red;
   font-size: 3rem;
   margin-top: 3vh;
   text-align: center;
 }
 .profile-duo {
-  margin-top: 10vh;
   display: flex;
   flex-direction: row;
-  background-color: red;
-  width: 80%;
-  margin-bottom: 10vh;
+  width: 100%;
+}
+.profile-name {
+  width: 60%;
+  text-transform: uppercase;
+  font-size: large;
+  margin-top: 3vh;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.profile-name > h1{
+  color: blue;
+}
+.profile-img-container {
+  width: 40%;
+  height: 60vh;
 }
 .profile-img {
-  width: 20%;
-  background-color: #03c8a8;
+  width: 100%;
+  height: 100%;
+  border-radius: 100px;
 }
 
 .profile-inputs {
-  margin-left: auto;
+  display: flex;
+  flex-direction: column;
   width: 50%;
-  background-color: green;
 }
 
 /* APARTMENTS */
 
+.profile-apartments-list {
+  background-color: white;
+  border-radius: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-.profile-apartments-duo{
+.profile-apartments-duo {
   width: 100%;
-   display: flex;
-   align-items: center;
-   justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .profile-apartments-container {
   margin-top: 10vh;
-  width: 80%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -61,36 +83,35 @@
   margin-bottom: 10vh;
 }
 
-.profile-btn{
+.profile-btn {
   margin-left: auto;
   width: 10%;
   min-width: max-content;
   height: 7vh;
-  color: #03c8a8;
+  color: blue;
   background-image: none;
   background-color: white;
-  border: 3px solid #03c8a8;
-  border-radius: 10px;
+  border: 3px solid blue;
+  border-radius: 100px;
+  font-size: large;
+  font-weight: bold;
 }
-.profile-btn:hover{
+.profile-btn:hover {
   color: white;
-  background-color: #89d8d3;
-  background-image: linear-gradient(315deg, #89d8d3 0%, #03c8a8 74%);
-  border-radius: 10px;
+  background-color: blue;
   cursor: pointer;
 }
 
-.profile-apartment{
-  background-color: red !important;
+.profile-apartment {
   width: 100px;
   height: 100px;
 }
 
 @media screen and (max-width: 900px) {
-  .profile-apartments-duo{
+  .profile-apartments-duo {
     flex-direction: column;
   }
-  .profile-btn{
+  .profile-btn {
     margin: 0;
     padding-left: 5vw;
     padding-right: 5vw;
@@ -99,5 +120,15 @@
   .profile-apartments-container {
     width: 90%;
   }
-}
 
+  .profile-duo{
+    flex-direction: column;
+  }
+  .profile-img-container{
+    width: 100%;
+  }
+  .profile-name{
+    width: 100%;
+    margin-bottom: 10vh;
+  }
+}

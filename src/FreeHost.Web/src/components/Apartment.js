@@ -36,7 +36,12 @@ function Apartment(props) {
   };
 
   return (
-    <div className="apartmentsPro-container">
+    <div
+      style={{ display: display ? "flex" : "none" }}
+      className={`apartmentsPro-container ${
+        props.profileScreen ? "width-90" : ""
+      }`}
+    >
       <div className="apartmentsPro-inner-container">
         <div className="apartmentsPro-duo-hor">
           <div className="apartmentsPro-duo">
@@ -47,7 +52,9 @@ function Apartment(props) {
           </div>
 
           <div className="apartmentsPro-description">
-            <h1 className="apartmentsPro-name apartment-name">{props.apartment.name}</h1>
+            <h1 className="apartmentsPro-name apartment-name">
+              {props.apartment.name}
+            </h1>
             <div>
               <h3>
                 <b>location: </b>
@@ -55,7 +62,7 @@ function Apartment(props) {
               </h3>
               <h3>
                 <b>distance from center: </b>
-                {props.apartment.distanceFromTheCenter}
+                {props.apartment.distanceFromTheCenter} km
               </h3>
               <h3>
                 <b>amenities: </b>
@@ -69,33 +76,49 @@ function Apartment(props) {
               </h3>
               {props.apartment.bookedDates.length !== 0 && (
                 <h3>
-                  <b>booking dates: </b>
-                  <ul>
-                    {props.apartment.bookedDates.map((element, index) => (
-                      <li key={index}>
-                        {element.startDate.substring(0, 10).replace(/-/g, ".") +
-                          "  - " +
-                          element.endDate.substring(0, 10).replace(/-/g, ".")}
-                      </li>
-                    ))}
-                  </ul>
-                </h3>
-              )}
-              {props.booking ? props.apartment.available ? (
-                <div className="apartment-btn-container">
-                  <button
-                    className="apartment-btn-booking apartment-btn"
-                    
+                  <b
+                    className="booking-dates"
                     onClick={() =>
-                      props.apartment.available &&
-                      BookHandler(props.apartment.id)
+                      alert(
+                        "booked dates: \n" +
+                          props.apartment.bookedDates
+                            .map(
+                              (element) =>
+                                element.startDate
+                                  .substring(0, 10)
+                                  .replace(/-/g, ".") +
+                                "  - " +
+                                element.endDate
+                                  .substring(0, 10)
+                                  .replace(/-/g, ".")
+                            )
+                            .join("\n")
+                      )
                     }
                   >
-                   Book now 
-                  </button>
-                </div>
-              ) :  <h2  className="apartment-status-unavailable">not available</h2>
-               : (
+                    booked dates{" "}
+                  </b>
+                </h3>
+              )}
+              {props.booking ? (
+                props.apartment.available ? (
+                  <div className="apartment-btn-container">
+                    <button
+                      className="apartment-btn-booking apartment-btn"
+                      onClick={() =>
+                        props.apartment.available &&
+                        BookHandler(props.apartment.id)
+                      }
+                    >
+                      Book now
+                    </button>
+                  </div>
+                ) : (
+                  <h2 className="apartment-status-unavailable">
+                    not available
+                  </h2>
+                )
+              ) : (
                 <div className="apartment-btn-container">
                   <button
                     className="apartment-btn-edit apartment-btn"

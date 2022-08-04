@@ -1,7 +1,7 @@
 .myGuests-header{
-    
+    text-align: center;
   text-transform: uppercase;
-  color: #03c8a8;
+  color:blue;
   font-size: 3rem;
   margin-top: 3vh;
 }

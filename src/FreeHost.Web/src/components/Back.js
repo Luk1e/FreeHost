@@ -8,7 +8,7 @@ function Back() {
 
   return (
     <div className="back-container">
-      <button className="back-inner-container" onClick={()=> navigate("/")}><i class="fa-solid fa-magnifying-glass"></i></button>
+      <button className="back-inner-container" onClick={()=> navigate("/")}><i className="fa-solid fa-magnifying-glass"></i></button>
     </div>
   );
 }
