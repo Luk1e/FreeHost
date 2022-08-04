@@ -67,9 +67,9 @@ public class BookingService : IBookingService
 
         var hasSameBookings = _bookedPlaceRepo
             .Get(x => x.Client.Id == userId)
-            .Any(x => x.StartDate == request.StartDate && x.EndDate == request.EndDate);
+            .Any(x => x.StartDate == request.StartDate && x.EndDate == request.EndDate && x.BookingStatus == BookingStatusEnum.Waiting);
         if (hasSameBookings)
-            throw new ArgumentException("You've already booked this place for selected date range");
+            throw new ArgumentException("You've already booked another place for this date range");
 
         var bookedPlace = new BookedPlace
         {

@@ -4,7 +4,7 @@ namespace FreeHost.Domain.Utils;
 
 public static class Paginator
 {
-    private const int PageLimit = 10;
+    private const int PageLimit = 5;
 
     public static PaginationResult<T> ApplyPagination<T>(IEnumerable<T> source, int currentPage)
     {
