@@ -98,7 +98,7 @@ public class BookingService : IBookingService
         var place = _placeRepo.Get(x => x.Id == booking.Place.Id).SingleOrDefault() ??
                     throw new ArgumentNullException(nameof(bookingId), "Place for this booking is not found");
 
-        if (place.BookedDates.Any(x => x.StartDate < booking.EndDate == x.EndDate < booking.StartDate && x.StartDate != booking.EndDate))
+        if (place.BookedDates.Any(x => x.StartDate <= booking.EndDate != x.EndDate < booking.StartDate))
             throw new ArgumentException("Another booking for this date range is already approved");
 
         booking.BookingStatus = BookingStatusEnum.Accepted;
@@ -113,7 +113,7 @@ public class BookingService : IBookingService
         }
 
         var rejected = _bookedPlaceRepo.Get(x => x.Place == place)
-            .Where(x => x.StartDate >= booking.EndDate == x.EndDate >= booking.StartDate && x.BookingStatus == BookingStatusEnum.Waiting).ToList();
+            .Where(x => x.StartDate <= booking.EndDate != x.EndDate < booking.StartDate && x.BookingStatus == BookingStatusEnum.Waiting).ToList();
         foreach (var bookedPlace in rejected)
         {
             bookedPlace.BookingStatus = BookingStatusEnum.Rejected;
