@@ -28,7 +28,7 @@ import {
 } from "../constants/userConstants";
 
 import { refresh } from "./systemActions";
-
+import { SYSTEM_GET_USER_RESET } from "../constants/systemConstants";
 import axios from "axios";
 
 export const login = (login, password) => async (dispatch) => {
@@ -68,6 +68,7 @@ export const login = (login, password) => async (dispatch) => {
 
 export const logout = () => (dispatch) => {
   localStorage.removeItem("userInfo");
+  dispatch({type: SYSTEM_GET_USER_RESET})
   dispatch({ type: USER_LOGOUT });
 };
 

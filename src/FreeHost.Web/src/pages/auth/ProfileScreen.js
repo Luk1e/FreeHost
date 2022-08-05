@@ -28,25 +28,26 @@ function ProfileScreen() {
   return (
     <div className="profile-page">
       <h1 className="profile-header">Profile</h1>
+      {user && (
+        <div className="profile-container">
+          <div className="profile-duo">
+            <div className="profile-img-container">
+              <img
+                className="profile-img"
+                src={"data:image/png;base64," + user.photo}
+              />
+            </div>
 
-      <div className="profile-container">
-        <div className="profile-duo">
-          <div className="profile-img-container">
-            <img
-              className="profile-img"
-              src={"data:image/png;base64," + user.photo}
-            />
-          </div>
-
-          <div className="profile-name">
-            <h1>{user.firstName + " " + user.lastName}</h1>
-            <h3>
-              <b>E-mail: </b>
-              {user.email}
-            </h3>
+            <div className="profile-name">
+              <h1>{user.firstName + " " + user.lastName}</h1>
+              <h3>
+                <b>E-mail: </b>
+                {user.email}
+              </h3>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div className="profile-apartments-container">
         <div className="profile-apartments-duo">
           <h1 className="profile-header">My Apartments</h1>

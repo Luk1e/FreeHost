@@ -26,7 +26,7 @@ function ApartmentPro(props) {
               </h3>
               <h3>
                 <b>distance from center: </b>
-                {props.apartment.distance} km
+                {props.apartment.distance} m
               </h3>
               <h3>
                 <b>booked dates: </b>

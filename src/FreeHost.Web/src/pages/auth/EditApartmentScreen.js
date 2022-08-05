@@ -229,6 +229,7 @@ function EditApartmentScreen() {
             className="create-app-input"
             value={numberOfBeds}
             onChange={(e) => setNumberOfBeds(e.target.value)}
+            min="0"
           />
           <div className="create-app-photo-container">
             <label className="custom-file-upload create-app-photo">
@@ -248,6 +249,7 @@ function EditApartmentScreen() {
             className="create-app-input"
             value={distance}
             onChange={(e) => setDistance(e.target.value)}
+            min="0"
           />
         </div>
         <div className="create-app-duoR">

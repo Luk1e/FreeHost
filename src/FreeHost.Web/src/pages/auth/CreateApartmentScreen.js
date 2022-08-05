@@ -41,8 +41,9 @@ function CreateApartmentScreen() {
     amenities: amenitiesList,
   } = systemAmenities;
 
-
-  const  userCreateApartments = useSelector((state) => state.userCreateApartments);
+  const userCreateApartments = useSelector(
+    (state) => state.userCreateApartments
+  );
   const {
     error: createError,
     loading: createLoading,
@@ -56,12 +57,11 @@ function CreateApartmentScreen() {
   useEffect(() => {
     dispatch(getCities());
     dispatch(getAmenities());
-    if(success){
-      
-      dispatch({type:USER_CREATE_APARTMENTS_RESET})
-      navigate("/profile")
+    if (success) {
+      dispatch({ type: USER_CREATE_APARTMENTS_RESET });
+      navigate("/profile");
     }
-  }, [navigate, dispatch,success]);
+  }, [navigate, dispatch, success]);
 
   //                PHOTO
   const UploadPhoto = (e) => {
@@ -69,7 +69,6 @@ function CreateApartmentScreen() {
       e.target.files[0]
     );
     setPhoto(e.target.files[0]);
-
   };
 
   //                LIMIT AMENITIES
@@ -99,24 +98,25 @@ function CreateApartmentScreen() {
     e.preventDefault();
     if (!message) {
       imageToBase64(photo).then((base64String) => {
-        dispatch(createApartment(
-          name,
-          city,
-          address,
-          amenities,
-          numberOfBeds,
-          base64String,
-          distance
-        ));
+        dispatch(
+          createApartment(
+            name,
+            city,
+            address,
+            amenities,
+            numberOfBeds,
+            base64String,
+            distance
+          )
+        );
       });
     }
-   
   };
 
   return (
     <div className="create-app-page">
-       {createLoading && (<Loader />)}
-       {createError && <Message>{createError}</Message>}
+      {createLoading && <Loader />}
+      {createError && <Message>{createError}</Message>}
       <h1 className="create-app-header">Add an apartment</h1>
       <form onSubmit={submitHandler} className="create-app-container">
         <div className="create-app-duoL">
@@ -185,6 +185,7 @@ function CreateApartmentScreen() {
             className="create-app-input"
             value={numberOfBeds}
             onChange={(e) => setNumberOfBeds(e.target.value)}
+            min="0"
           />
           <div className="create-app-photo-container">
             <label className="custom-file-upload create-app-photo">
@@ -204,6 +205,7 @@ function CreateApartmentScreen() {
             className="create-app-input"
             value={distance}
             onChange={(e) => setDistance(e.target.value)}
+            min="0"
           />
         </div>
         <div className="create-app-duoR">

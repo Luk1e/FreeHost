@@ -22,7 +22,8 @@ import {
   SYSTEM_MY_BOOKINGS_SUCCESS,
   SYSTEM_GET_USER_FAIL,
   SYSTEM_GET_USER_REQUEST,
-  SYSTEM_GET_USER_SUCCESS
+  SYSTEM_GET_USER_SUCCESS,
+  SYSTEM_GET_USER_RESET,
 } from "../constants/systemConstants";
 
 export const systemCitiesReducer = (state = { cities: [] }, action) => {
@@ -106,7 +107,6 @@ export const systemGuestsReducer = (state = { guests: [] }, action) => {
   }
 };
 
-
 export const systemBookingsReducer = (state = { bookings: [] }, action) => {
   switch (action.type) {
     case SYSTEM_MY_BOOKINGS_REQUEST:
@@ -122,7 +122,6 @@ export const systemBookingsReducer = (state = { bookings: [] }, action) => {
   }
 };
 
-
 export const systemUserReducer = (state = { user: {} }, action) => {
   switch (action.type) {
     case SYSTEM_GET_USER_REQUEST:
@@ -133,7 +132,8 @@ export const systemUserReducer = (state = { user: {} }, action) => {
 
     case SYSTEM_GET_USER_FAIL:
       return { loading: false, error: action.payload };
-
+    case SYSTEM_GET_USER_RESET:
+      return {};
     default:
       return state;
   }
