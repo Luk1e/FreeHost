@@ -61,9 +61,14 @@ function Apartment(props) {
                 {props.apartment.city + ", " + props.apartment.address}
               </h3>
               <h3>
-                <b>distance from center: </b>
-                {props.apartment.distanceFromTheCenter} km
+                <b>number of beds: </b>
+                {props.apartment.numberOfBeds}
               </h3>
+              <h3>
+                <b>distance from center: </b>
+                {props.apartment.distanceFromTheCenter} m
+              </h3>
+
               <h3>
                 <b>amenities: </b>
                 {props.apartment.amenities.length == 0
